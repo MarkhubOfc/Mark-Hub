@@ -1,3 +1,3 @@
 # Mark Hub
 
- Loader amd others.
+ Loader and others.
