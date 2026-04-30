@@ -44,15 +44,7 @@ RunService.Stepped:Connect(function()
   end
 end)
 
-local function CheckLevel()
-  local lvl = lp.Data.Level.Value
-  for _, data in ipairs(MobList) do
-    if lvl >= data.LevelMin and lvl <= data.LevelMax then
-      return data
-    end
-  end
-  return MobList[#MobList]
-end
+None
 
 task.spawn(function()
   while true do
@@ -76,7 +68,7 @@ task.spawn(function()
       end
 
       if _G.AutoFarmLevel then
-        local LevelData = CheckLevel()
+        local LevelData = MobList:CheckLevel()
 
         if not lp.PlayerGui.Main.Quest.Visible then
           tweenTo({CFrame = LevelData.QuestPos, Speed = 250})
