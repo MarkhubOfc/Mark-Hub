@@ -1,8 +1,7 @@
 local List = {}
 
 function List:CheckLevel()
-  local lp = game:GetService("Players").LocalPlayer
-  local MyLevel = lp.Data.Level.Value
+  local MyLevel = game:GetService("Players").LocalPlayer:WaitForChild("Data"):WaitForChild("Level").Value
   
   if MyLevel >= 1 and MyLevel <= 9 then
     return {
