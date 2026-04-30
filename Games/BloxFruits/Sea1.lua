@@ -19,7 +19,8 @@ local CommF = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("CommF_")
 _G.AutoFarmLevel = false
 
 local FastAttackModule = loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Mark-Hub/refs/heads/main/Modules/BloxFruits/FastAttackModule.lua"))()
-local MobList = loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Mark-Hub/refs/heads/main/Modules/BloxFruits/MobList.lua"))()
+-- Nome do módulo alterado para MobList1.lua conforme solicitado
+local MobList1 = loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Mark-Hub/refs/heads/main/Modules/BloxFruits/MobList1.lua"))()
 
 local function tweenTo(config)
   local hrp = lp.Character and lp.Character:FindFirstChild("HumanoidRootPart")
@@ -79,7 +80,8 @@ task.spawn(function()
       local Char = lp.Character
       if not Char or not Char:FindFirstChild("HumanoidRootPart") then return end
 
-      local LevelData = MobList:CheckLevel()
+      -- Chamando a função do módulo MobList1
+      local LevelData = MobList1:CheckLevel()
       
       local TargetInstance = nil
       for _, v in pairs(workspace.Enemies:GetChildren()) do
@@ -90,6 +92,7 @@ task.spawn(function()
       end
       
       if not lp.PlayerGui.Main.Quest.Visible then
+        -- Desativa ataque e desequipa arma enquanto vai para a Quest
         if FastAttackModule.Enabled then FastAttackModule:Toggle(false) end
         if Char:FindFirstChild("Combat") then Char.Humanoid:UnequipTools() end
 
@@ -101,6 +104,7 @@ task.spawn(function()
           CommF:InvokeServer("StartQuest", LevelData.NameQuest, LevelData.LevelQuest)
         end
       else
+        -- Posição dinâmica baseada no monstro ou posição padrão do módulo
         local TargetPos = (TargetInstance and TargetInstance:FindFirstChild("HumanoidRootPart")) 
           and TargetInstance.HumanoidRootPart.CFrame * CFrame.new(0, 11, 0) 
           or LevelData.CFrameMon
@@ -112,6 +116,7 @@ task.spawn(function()
           Speed = 250
         })
 
+        -- Só ataca e equipa se estiver a menos de 15 studs do destino
         if currentDist <= 15 then
           local tool = lp.Backpack:FindFirstChild("Combat") or Char:FindFirstChild("Combat")
           if tool and tool.Parent ~= Char then
@@ -121,6 +126,7 @@ task.spawn(function()
             FastAttackModule:Toggle(true)
           end
         else
+          -- Desativa ataque e guarda a arma se estiver longe
           if FastAttackModule.Enabled then
             FastAttackModule:Toggle(false)
           end
