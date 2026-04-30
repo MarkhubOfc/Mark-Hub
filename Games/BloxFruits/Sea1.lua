@@ -29,7 +29,7 @@ local function tweenTo(config)
 end
 
 local function stopFastAttack()
-  if FastAttackModule.Enabled then
+  if FastAttackModule and FastAttackModule.Toggle then
     FastAttackModule:Toggle(false)
   end
 end
@@ -137,44 +137,36 @@ SectionLeft:Label({
 
 SectionLeft:Divider()
 
-local AutoLevelToggle = SectionLeft:Toggle({
+SectionLeft:Toggle({
   Name = "Auto farm level",
   Default = false,
   Callback = function(value)
     _G.AutoFarmLevel = value
-    if not value and not _G.AutoFarmNearest then
-      stopFastAttack()
-    end
   end,
 }, "AutoLevelFlag")
 
-local AutoNearestToggle = SectionLeft:Toggle({
+SectionLeft:Toggle({
   Name = "Auto farm nearest",
   Default = false,
   Callback = function(value)
     _G.AutoFarmNearest = value
-    if not value and not _G.AutoFarmLevel then
-      stopFastAttack()
-    end
   end,
 }, "AutoNearestFlag")
 
 local dragGui = Instance.new("ScreenGui")
-dragGui.Name = "FarmToggleGui"
+dragGui.Name = "MarkHubToggleGui"
 dragGui.ResetOnSpawn = false
-dragGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 dragGui.Parent = lp.PlayerGui
 
 local dragBtn = Instance.new("TextButton")
 dragBtn.Size = UDim2.fromOffset(44, 44)
-dragBtn.Position = UDim2.new(1, -54, 0.5, -22)
+dragBtn.Position = UDim2.new(1, -60, 0.5, -22)
 dragBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 dragBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-dragBtn.Text = "⚔"
+dragBtn.Text = "M"
 dragBtn.Font = Enum.Font.GothamBold
 dragBtn.TextSize = 20
 dragBtn.BorderSizePixel = 0
-dragBtn.ZIndex = 10
 dragBtn.Parent = dragGui
 
 local dragCorner = Instance.new("UICorner")
@@ -184,8 +176,7 @@ dragCorner.Parent = dragBtn
 local dragActive, dragStart, dragStartPos, dragMoved = false, nil, nil, false
 
 dragBtn.InputBegan:Connect(function(input)
-  if input.UserInputType == Enum.UserInputType.MouseButton1
-  or input.UserInputType == Enum.UserInputType.Touch then
+  if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
     dragActive = true
     dragMoved = false
     dragStart = input.Position
@@ -194,35 +185,18 @@ dragBtn.InputBegan:Connect(function(input)
 end)
 
 UIS.InputChanged:Connect(function(input)
-  if dragActive and (
-    input.UserInputType == Enum.UserInputType.MouseMovement or
-    input.UserInputType == Enum.UserInputType.Touch
-  ) then
+  if dragActive and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
     local delta = input.Position - dragStart
-    if delta.Magnitude > 4 then
-      dragMoved = true
-    end
-    dragBtn.Position = UDim2.new(
-      dragStartPos.X.Scale,
-      dragStartPos.X.Offset + delta.X,
-      dragStartPos.Y.Scale,
-      dragStartPos.Y.Offset + delta.Y
-    )
+    if delta.Magnitude > 5 then dragMoved = true end
+    dragBtn.Position = UDim2.new(dragStartPos.X.Scale, dragStartPos.X.Offset + delta.X, dragStartPos.Y.Scale, dragStartPos.Y.Offset + delta.Y)
   end
 end)
 
 UIS.InputEnded:Connect(function(input)
-  if input.UserInputType == Enum.UserInputType.MouseButton1
-  or input.UserInputType == Enum.UserInputType.Touch then
-    if not dragMoved then
-      _G.AutoFarmNearest = not _G.AutoFarmNearest
-      AutoNearestToggle:Set(_G.AutoFarmNearest)
-      if not _G.AutoFarmNearest and not _G.AutoFarmLevel then
-        stopFastAttack()
-      end
-      dragBtn.BackgroundColor3 = _G.AutoFarmNearest
-        and Color3.fromRGB(0, 180, 80)
-        or Color3.fromRGB(30, 30, 30)
+  if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+    if dragActive and not dragMoved then
+      local currentState = Window:GetState()
+      Window:SetState(not currentState)
     end
     dragActive = false
   end
