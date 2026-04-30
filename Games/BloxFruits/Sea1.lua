@@ -5,6 +5,7 @@ local TweenService = game:GetService("TweenService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local UIS = game:GetService("UserInputService")
+local CoreGui = game:GetService("CoreGui")
 local CommF = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("CommF_")
 
 _G.AutoFarmLevel = false
@@ -94,8 +95,9 @@ task.spawn(function()
           for _, v in pairs(workspace.Enemies:GetChildren()) do
             if v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
               if LevelData.EnemyName:find(" or ") then
-                for name in LevelData.EnemyName:gmatch("[^ or ]+") do
-                  if v.Name == name then
+                local names = LevelData.EnemyName:split(" or ")
+                for _, name in pairs(names) do
+                  if v.Name == name:gsub("^%s*(.-)%s*$", "%1") then
                     Target = v
                     break
                   end
@@ -108,7 +110,7 @@ task.spawn(function()
           end
 
           if Target then
-            tweenTo({CFrame = Target.HumanoidRootPart.CFrame * CFrame.new(0, 12, 0), Speed = 250})
+            tweenTo({CFrame = Target.HumanoidRootPart.CFrame * CFrame.new(0, 11, 0), Speed = 250})
           else
             tweenTo({CFrame = LevelData.fPos, Speed = 250})
           end
@@ -128,7 +130,7 @@ task.spawn(function()
         end
 
         if Nearest then
-          tweenTo({CFrame = Nearest.HumanoidRootPart.CFrame * CFrame.new(0, 12, 0), Speed = 250})
+          tweenTo({CFrame = Nearest.HumanoidRootPart.CFrame * CFrame.new(0, 11, 0), Speed = 250})
         end
       end
     end)
@@ -187,7 +189,7 @@ SectionLeft:Toggle({
 local dragGui = Instance.new("ScreenGui")
 dragGui.Name = "MarkHubToggleGui"
 dragGui.ResetOnSpawn = false
-dragGui.Parent = lp.PlayerGui
+pcall(function() dragGui.Parent = CoreGui end)
 
 local dragBtn = Instance.new("TextButton")
 dragBtn.Size = UDim2.fromOffset(44, 44)
