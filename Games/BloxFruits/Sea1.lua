@@ -22,6 +22,7 @@ _G.AttackSpeed = 0.1
 _G.AttackDistance = 45
 _G.FarmDistance = 15
 _G.AutoAttack = true
+_G.AttackPlayers = true
 
 local FastAttackModule = loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Mark-Hub/refs/heads/main/Modules/BloxFruits/FastAttackModule.lua"))()
 local MobList1 = loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Mark-Hub/refs/heads/main/Modules/BloxFruits/MobList1.lua"))()
@@ -148,10 +149,7 @@ task.spawn(function()
           CommF:InvokeServer("StartQuest", LevelData.NameQuest, LevelData.LevelQuest)
         end
       else
-        local TargetPos = LevelData.CFrameMon
-        if _G.AutoFarmNearest and TargetInstance then
-          TargetPos = TargetInstance.HumanoidRootPart.CFrame * CFrame.new(0, _G.FarmDistance, 0)
-        end
+        local TargetPos = TargetInstance and TargetInstance.HumanoidRootPart.CFrame * CFrame.new(0, _G.FarmDistance, 0) or LevelData.CFrameMon * CFrame.new(0, _G.FarmDistance, 0)
         if TargetInstance then
           bringMonsters(LevelData.NameMon, Char.HumanoidRootPart.CFrame)
         end
@@ -173,6 +171,14 @@ task.spawn(function()
               if m:FindFirstChild("Humanoid") and m.Humanoid.Health > 0 and (m.HumanoidRootPart.Position - Char.HumanoidRootPart.Position).Magnitude <= _G.AttackDistance then
                 game:GetService("VirtualUser"):CaptureController()
                 game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
+              end
+            end
+            if _G.AttackPlayers then
+              for _, p in pairs(game:GetService("Players"):GetPlayers()) do
+                if p ~= lp and p.Character and p.Character:FindFirstChild("HumanoidRootPart") and (p.Character.HumanoidRootPart.Position - Char.HumanoidRootPart.Position).Magnitude <= _G.AttackDistance then
+                  game:GetService("VirtualUser"):CaptureController()
+                  game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
+                end
               end
             end
           end
@@ -282,6 +288,14 @@ SectionLeftSettings:Toggle({
     _G.AutoAttack = value
   end,
 }, "AutoAttackFlag")
+
+SectionLeftSettings:Toggle({
+  Name = "Attack players",
+  Default = true,
+  Callback = function(value)
+    _G.AttackPlayers = value
+  end,
+}, "AttackPlayersFlag")
 
 local dragGui = new("ScreenGui", {
   Name = "MarkHubToggleGui", 
