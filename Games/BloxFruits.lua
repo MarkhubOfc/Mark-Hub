@@ -9,7 +9,7 @@ local CommF = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("CommF_")
 _G.AutoFarmLevel = false
 _G.AutoFarmNearest = false
 
-local FastAttackModule = loadstring(game:HttpGet("https://raw.githubusercontent.com/newredzv3/Scripts/refs/heads/main/Utils/Module/FastAttack.luau"))()
+local FastAttackModule = loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Mark-Hub/refs/heads/main/Modules/BloxFruits/FastAttackModule.lua"))() -- Original: https://raw.githubusercontent.com/newredzv3/Scripts/refs/heads/main/Utils/Module/FastAttack.luau
 local MobList = loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Mark-Hub/refs/heads/main/Modules/BloxFruits/MobList.lua"))()
 
 local Window = MacLib:Window({
