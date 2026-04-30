@@ -30,7 +30,7 @@ function List:CheckLevel()
   elseif MyLevel >= 20 then
     return {
       QuestName = "JungleQuest",
-      EnemyName = "The Gorilla King",
+      EnemyName = "The Gorilla King" or "Gorilla",
       QuestLvl = 3,
       fPos = CFrame.new(-1328, 19, -543),
       QuestPos = CFrame.new(-1603, 37, 153)
