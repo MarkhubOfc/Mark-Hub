@@ -44,8 +44,6 @@ RunService.Stepped:Connect(function()
   end
 end)
 
-None
-
 task.spawn(function()
   while true do
     task.wait()
