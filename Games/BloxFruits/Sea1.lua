@@ -84,33 +84,47 @@ task.spawn(function()
 
       if _G.AutoFarmLevel then
         local LevelData = MobList:CheckLevel()
+        local TargetName = tostring(LevelData.EnemyName)
+        local TargetQuestLvl = LevelData.QuestLvl
+
+        local EnemyList = {}
+        for name in TargetName:gmatch("[^ or ]+") do
+          table.insert(EnemyList, name:gsub("^%s*(.-)%s*$", "%1"))
+        end
+
+        local QuestLvlList = {}
+        if type(TargetQuestLvl) == "string" then
+          for lvl in TargetQuestLvl:gmatch("[^ or ]+") do
+            table.insert(QuestLvlList, tonumber(lvl))
+          end
+        else
+          table.insert(QuestLvlList, TargetQuestLvl)
+        end
+
+        local ChosenEnemy = EnemyList[1]
+        local ChosenLvl = QuestLvlList[1]
+        local TargetInstance = nil
+
+        for i, name in ipairs(EnemyList) do
+          for _, v in pairs(workspace.Enemies:GetChildren()) do
+            if v.Name == name and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+              TargetInstance = v
+              ChosenEnemy = name
+              ChosenLvl = QuestLvlList[i] or QuestLvlList[1]
+              break
+            end
+          end
+          if TargetInstance then break end
+        end
 
         if not lp.PlayerGui.Main.Quest.Visible then
           tweenTo({CFrame = LevelData.QuestPos, Speed = 250})
           if (Char.HumanoidRootPart.Position - LevelData.QuestPos.Position).Magnitude < 10 then
-            CommF:InvokeServer("StartQuest", LevelData.QuestName, LevelData.QuestLvl)
+            CommF:InvokeServer("StartQuest", LevelData.QuestName, ChosenLvl)
           end
         else
-          local Target = nil
-          for _, v in pairs(workspace.Enemies:GetChildren()) do
-            if v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
-              if LevelData.EnemyName:find(" or ") then
-                local names = LevelData.EnemyName:split(" or ")
-                for _, name in pairs(names) do
-                  if v.Name == name:gsub("^%s*(.-)%s*$", "%1") then
-                    Target = v
-                    break
-                  end
-                end
-              elseif v.Name == LevelData.EnemyName then
-                Target = v
-              end
-            end
-            if Target then break end
-          end
-
-          if Target then
-            tweenTo({CFrame = Target.HumanoidRootPart.CFrame * CFrame.new(0, 11, 0), Speed = 250})
+          if TargetInstance then
+            tweenTo({CFrame = TargetInstance.HumanoidRootPart.CFrame * CFrame.new(0, 15, 0), Speed = 250})
           else
             tweenTo({CFrame = LevelData.fPos, Speed = 250})
           end
@@ -118,7 +132,6 @@ task.spawn(function()
 
       elseif _G.AutoFarmNearest then
         local Nearest, minDist = nil, math.huge
-
         for _, v in pairs(workspace.Enemies:GetChildren()) do
           if v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
             local mag = (Char.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude
@@ -128,7 +141,6 @@ task.spawn(function()
             end
           end
         end
-
         if Nearest then
           tweenTo({CFrame = Nearest.HumanoidRootPart.CFrame * CFrame.new(0, 11, 0), Speed = 250})
         end
