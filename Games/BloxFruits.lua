@@ -14,7 +14,7 @@ local MobList = loadstring(game:HttpGet("https://raw.githubusercontent.com/Markh
 
 local Window = MacLib:Window({
   Title = "Mark hub",
-  Subtitle = "Blox Fruits | V3",
+  Subtitle = "Blox Fruits | Free",
   Size = UDim2.fromOffset(860, 450),
   DragStyle = 1,
   DisabledWindowControls = {},
