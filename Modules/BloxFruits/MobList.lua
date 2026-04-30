@@ -19,6 +19,14 @@ function List:CheckLevel()
       fPos = CFrame.new(-1448, 48, 58),
       QuestPos = CFrame.new(-1603, 37, 153)
     }
+  elseif MyLevel >= 15 then
+    return {
+      QuestName = "JungleQuest",
+      QuestLvl = 2,
+      EnemyName = "Gorilla",
+      fPos = CFrame.new(-1328, 19, -543),
+      QuestPos = CFrame.new(-1603, 37, 153)
+    }
   end
 end
 
