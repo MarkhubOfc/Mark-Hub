@@ -31,7 +31,7 @@ function List:CheckLevel()
     return {
       QuestName = "JungleQuest",
       EnemyName = "The Gorilla King" or "Gorilla",
-      QuestLvl = 3,
+      QuestLvl = 3 or 2,
       fPos = CFrame.new(-1328, 19, -543),
       QuestPos = CFrame.new(-1603, 37, 153)
     }
