@@ -8,6 +8,9 @@ local function new(c, p)
 end
 
 local MacLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Librarys/refs/heads/main/MacLib/Source.lua"))()
+local FastAttackModule = loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Mark-Hub/refs/heads/main/Modules/BloxFruits/FastAttackModule.lua"))()
+local MobList1 = loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Mark-Hub/refs/heads/main/Modules/BloxFruits/MobList1.lua"))()
+
 local lp = game:GetService("Players").LocalPlayer
 local TweenService = game:GetService("TweenService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -16,38 +19,52 @@ local UIS = game:GetService("UserInputService")
 local CoreGui = game:GetService("CoreGui")
 local CommF = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("CommF_")
 
-_G.AutoFarmLevel = false
-_G.AutoFarmNearest = false
-_G.AttackSpeed = 0.1
-_G.AttackDistance = 45
-_G.FarmDistance = 15
-_G.TweenSpeed = 250
-_G.AutoAttack = true
-_G.AttackPlayers = true
-
-local FastAttackModule = loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Mark-Hub/refs/heads/main/Modules/BloxFruits/FastAttackModule.lua"))()
-local MobList1 = loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Mark-Hub/refs/heads/main/Modules/BloxFruits/MobList1.lua"))()
+_G.Configs = {
+  Farm = {
+    AutoLevel = false,
+    AutoNearest = false,
+    Distance = 15,
+    TweenSpeed = 250
+  },
+  Attack = {
+    Enabled = true,
+    Players = true,
+    Speed = 0.1,
+    Distance = 45
+  },
+  Stats = {
+    AutoAdd = false,
+    Amount = 3,
+    Targets = {
+      Melee = false,
+      Defense = false,
+      Sword = false,
+      Gun = false,
+      ["Demon Fruit"] = false
+    }
+  }
+}
 
 local function tweenTo(config)
   local hrp = lp.Character and lp.Character:FindFirstChild("HumanoidRootPart")
-  if not hrp or not config.CFrame then return end
+  if not hrp or not config.CFrame then
+    return
+  end
+  
   local bv = hrp:FindFirstChild("TweenStabilizer") or new("BodyVelocity", {
     Name = "TweenStabilizer",
     Parent = hrp,
     MaxForce = Vector3.new(9e9, 9e9, 9e9),
     Velocity = Vector3.zero
   })
-  if currentTween then 
-    currentTween:Cancel() 
+  
+  if currentTween then
+    currentTween:Cancel()
   end
+  
   local dist = (hrp.Position - config.CFrame.Position).Magnitude
-  local info = TweenInfo.new(
-    dist / (_G.TweenSpeed or 250), 
-    Enum.EasingStyle.Linear
-  )
-  currentTween = TweenService:Create(hrp, info, {
-    CFrame = config.CFrame
-  })
+  local info = TweenInfo.new(dist / _G.Configs.Farm.TweenSpeed, Enum.EasingStyle.Linear)
+  currentTween = TweenService:Create(hrp, info, {CFrame = config.CFrame})
   currentTween:Play()
 end
 
@@ -56,14 +73,16 @@ local function cleanPhysics()
     currentTween:Cancel() 
     currentTween = nil 
   end
+  
   local hrp = lp.Character and lp.Character:FindFirstChild("HumanoidRootPart")
   if hrp then
     local bv = hrp:FindFirstChild("TweenStabilizer")
-    if bv then 
-      bv:Destroy() 
+    if bv then
+      bv:Destroy()
     end
-    hrp.Velocity = Vector3.zero
+    hrp.AssemblyLinearVelocity = Vector3.zero
   end
+  
   if lp.Character then
     lp.Character.Humanoid.AutoRotate = true
     for _, v in pairs(lp.Character:GetDescendants()) do
@@ -74,46 +93,34 @@ local function cleanPhysics()
   end
 end
 
-local function getNearestMonster(monsterName)
-  local nearest = nil
-  local lastDist = math.huge
-  for _, v in pairs(workspace.Enemies:GetChildren()) do
-    if v.Name == monsterName and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and v:FindFirstChild("HumanoidRootPart") then
-      local dist = (lp.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude
-      if dist < lastDist then
-        lastDist = dist
-        nearest = v
-      end
-    end
-  end
-  return nearest
-end
-
 local function bringMonsters(name, pcf)
   for _, v in pairs(workspace.Enemies:GetChildren()) do
     if v.Name == name and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
       v.HumanoidRootPart.CanCollide = false
+      
       local bringBv = v.HumanoidRootPart:FindFirstChild("BringBv") or new("BodyVelocity", {
-        Name = "BringBv",
-        Parent = v.HumanoidRootPart,
+        Name = "BringBv", 
+        Parent = v.HumanoidRootPart, 
         MaxForce = Vector3.new(9e9, 9e9, 9e9)
       })
+      
       local bringBg = v.HumanoidRootPart:FindFirstChild("BringBg") or new("BodyGyro", {
-        Name = "BringBg",
-        Parent = v.HumanoidRootPart,
-        MaxTorque = Vector3.new(9e9, 9e9, 9e9),
-        CFrame = CFrame.new(0,0,0)
+        Name = "BringBg", 
+        Parent = v.HumanoidRootPart, 
+        MaxTorque = Vector3.new(9e9, 9e9, 9e9), 
+        CFrame = CFrame.new(0, 0, 0)
       })
+      
       bringBv.Velocity = (pcf.Position - v.HumanoidRootPart.Position).Unit * 50
-      if (pcf.Position - v.HumanoidRootPart.Position).Magnitude < 1 then
-        bringBv.Velocity = Vector3.zero
+      if (pcf.Position - v.HumanoidRootPart.Position).Magnitude < 1 then 
+        bringBv.Velocity = Vector3.zero 
       end
     end
   end
 end
 
 RunService.Stepped:Connect(function()
-  if (_G.AutoFarmLevel or _G.AutoFarmNearest) and lp.Character then
+  if (_G.Configs.Farm.AutoLevel or _G.Configs.Farm.AutoNearest) and lp.Character then
     lp.Character.Humanoid.AutoRotate = false
     for _, v in pairs(lp.Character:GetDescendants()) do
       if v:IsA("BasePart") then 
@@ -125,71 +132,98 @@ end)
 
 task.spawn(function()
   while true do
-    task.wait(_G.AttackSpeed)
+    task.wait(_G.Configs.Attack.Speed)
     pcall(function()
       local Char = lp.Character
-      if not Char or not Char:FindFirstChild("HumanoidRootPart") then return end
+      if not Char or not Char:FindFirstChild("HumanoidRootPart") then
+        return
+      end
 
-      if _G.AutoAttack or _G.AttackPlayers then
-        local tool = Char:FindFirstChild("Combat")
-        if tool then
+      if _G.Configs.Stats.AutoAdd then
+        local pPoints = lp.Data:FindFirstChild("Points")
+        if pPoints and pPoints.Value > 0 then
+          local activeStats = {}
+          for sName, enabled in pairs(_G.Configs.Stats.Targets) do
+            if enabled then 
+              table.insert(activeStats, sName) 
+            end
+          end
+          
+          if #activeStats > 0 then
+            local toSpend = math.min(pPoints.Value, _G.Configs.Stats.Amount)
+            for i = 1, toSpend do
+              local target = activeStats[(i - 1) % #activeStats + 1]
+              CommF:InvokeServer("AddPoint", target, 1)
+            end
+          end
+        end
+      end
+
+      if _G.Configs.Attack.Enabled or _G.Configs.Attack.Players then
+        if Char:FindFirstChild("Combat") then
           if not FastAttackModule.Enabled then 
             FastAttackModule:Toggle(true) 
           end
           
-          if _G.AutoAttack then
+          if _G.Configs.Attack.Enabled then
             for _, m in pairs(workspace.Enemies:GetChildren()) do
-              if m:FindFirstChild("Humanoid") and m.Humanoid.Health > 0 and m:FindFirstChild("HumanoidRootPart") then
-                if (m.HumanoidRootPart.Position - Char.HumanoidRootPart.Position).Magnitude <= _G.AttackDistance then
-                  game:GetService("VirtualUser"):CaptureController()
-                  game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
-                end
+              if m:FindFirstChild("Humanoid") and m.Humanoid.Health > 0 and (m.HumanoidRootPart.Position - Char.HumanoidRootPart.Position).Magnitude <= _G.Configs.Attack.Distance then
+                game:GetService("VirtualUser"):CaptureController()
+                game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
               end
             end
           end
-
-          if _G.AttackPlayers then
+          
+          if _G.Configs.Attack.Players then
             for _, p in pairs(game:GetService("Players"):GetPlayers()) do
-              if p ~= lp and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-                if (p.Character.HumanoidRootPart.Position - Char.HumanoidRootPart.Position).Magnitude <= _G.AttackDistance then
-                  game:GetService("VirtualUser"):CaptureController()
-                  game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
-                end
+              if p ~= lp and p.Character and p.Character:FindFirstChild("HumanoidRootPart") and (p.Character.HumanoidRootPart.Position - Char.HumanoidRootPart.Position).Magnitude <= _G.Configs.Attack.Distance then
+                game:GetService("VirtualUser"):CaptureController()
+                game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 672))
               end
             end
           end
         end
       end
 
-      if _G.AutoFarmLevel or _G.AutoFarmNearest then
+      if _G.Configs.Farm.AutoLevel or _G.Configs.Farm.AutoNearest then
         local LevelData = MobList1:CheckLevel()
-        local TargetInstance = getNearestMonster(LevelData.NameMon)
         
         if not lp.PlayerGui.Main.Quest.Visible then
           if Char:FindFirstChild("Combat") then 
             Char.Humanoid:UnequipTools() 
           end
+          
           tweenTo({CFrame = LevelData.CFrameQuest})
+          
           if (Char.HumanoidRootPart.Position - LevelData.CFrameQuest.Position).Magnitude < 10 then
             CommF:InvokeServer("StartQuest", LevelData.NameQuest, LevelData.LevelQuest)
           end
         else
-          local TargetPos = TargetInstance and TargetInstance.HumanoidRootPart.CFrame * CFrame.new(0, _G.FarmDistance, 0) or LevelData.CFrameMon * CFrame.new(0, _G.FarmDistance, 0)
+          local nearest = nil
+          local lastDist = math.huge
           
-          if TargetInstance then
-            bringMonsters(LevelData.NameMon, TargetPos * CFrame.new(0, -_G.FarmDistance, 0))
+          for _, v in pairs(workspace.Enemies:GetChildren()) do
+            if v.Name == LevelData.NameMon and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+              local d = (Char.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude
+              if d < lastDist then 
+                lastDist = d 
+                nearest = v 
+              end
+            end
+          end
+          
+          local TargetPos = nearest and nearest.HumanoidRootPart.CFrame * CFrame.new(0, _G.Configs.Farm.Distance, 0) or LevelData.CFrameMon * CFrame.new(0, _G.Configs.Farm.Distance, 0)
+          
+          if nearest then 
+            bringMonsters(LevelData.NameMon, TargetPos * CFrame.new(0, -_G.Configs.Farm.Distance, 0)) 
           end
           
           tweenTo({CFrame = TargetPos})
           
           local tool = lp.Backpack:FindFirstChild("Combat") or Char:FindFirstChild("Combat")
-          if tool and tool.Parent ~= Char then
-            Char.Humanoid:EquipTool(tool)
+          if tool and tool.Parent ~= Char then 
+            Char.Humanoid:EquipTool(tool) 
           end
-        end
-      else
-        if FastAttackModule.Enabled and not (_G.AutoAttack or _G.AttackPlayers) then 
-          FastAttackModule:Toggle(false) 
         end
       end
     end)
@@ -203,128 +237,190 @@ local Window = MacLib:Window({
   DragStyle = 2,
   ShowUserInfo = true,
   Keybind = Enum.KeyCode.RightControl,
-  AcrylicBlur = true,
+  AcrylicBlur = true
 })
 
-local TabGroup = Window:TabGroup()
+local UI = {
+  Tabs = Window:TabGroup(),
+  Elements = {}
+}
 
-local MainTab = TabGroup:Tab({
+UI.Elements.Main = UI.Tabs:Tab({
   Name = "Main", 
   Image = "rbxassetid://10734949013"
 })
 
-local SettingsTab = TabGroup:Tab({
-  Name = "Settings",
+UI.Elements.Stats = UI.Tabs:Tab({
+  Name = "Stats", 
+  Image = "rbxassetid://10734950039"
+})
+
+UI.Elements.Settings = UI.Tabs:Tab({
+  Name = "Settings", 
   Image = "rbxassetid://10734950309"
 })
 
-local SectionLeftMain = MainTab:Section({
-  Side = "Left"
+local Sections = {
+  Main = UI.Elements.Main:Section({Side = "Left"}),
+  Stats = UI.Elements.Stats:Section({Side = "Left"}),
+  Settings = UI.Elements.Settings:Section({Side = "Left"})
+}
+
+Sections.Main:Toggle({
+  Name = "Auto farm level", 
+  Default = false, 
+  Callback = function(v) 
+    _G.Configs.Farm.AutoLevel = v 
+    if not v then
+      cleanPhysics()
+    end 
+  end
 })
 
-SectionLeftMain:Toggle({
-  Name = "Auto farm level",
-  Default = false,
-  Callback = function(value)
-    _G.AutoFarmLevel = value
-    if not value then cleanPhysics() end
-  end,
-}, "AutoLevelFlag")
-
-SectionLeftMain:Toggle({
-  Name = "Auto farm nearest",
-  Default = false,
-  Callback = function(value)
-    _G.AutoFarmNearest = value
-    if not value then cleanPhysics() end
-  end,
-}, "AutoNearestFlag")
-
-local SectionLeftSettings = SettingsTab:Section({
-  Side = "Left"
+Sections.Main:Toggle({
+  Name = "Auto farm nearest", 
+  Default = false, 
+  Callback = function(v) 
+    _G.Configs.Farm.AutoNearest = v 
+    if not v then
+      cleanPhysics()
+    end 
+  end
 })
 
-SectionLeftSettings:Label({
-  Name = "Farm settings"
+Sections.Stats:Label({
+  Name = "Stats config"
 })
 
-SectionLeftSettings:Slider({
-  Name = "Attack speed",
-  Default = 0.1,
-  Minimum = 0.1,
-  Maximum = 1,
-  DisplayMethod = "Value",
-  Callback = function(Value)
-    _G.AttackSpeed = Value
-  end,
-}, "AttackSpeedSlider")
+Sections.Stats:Slider({
+  Name = "Add point", 
+  Default = 3, 
+  Minimum = 1, 
+  Maximum = 100, 
+  DisplayMethod = "Percent", 
+  Callback = function(v) 
+    _G.Configs.Stats.Amount = v 
+  end
+})
 
-SectionLeftSettings:Slider({
-  Name = "Attack distance",
-  Default = 45,
-  Minimum = 10,
-  Maximum = 45,
-  DisplayMethod = "Value",
-  Callback = function(Value)
-    _G.AttackDistance = Value
-  end,
-}, "AttackDistanceSlider")
+Sections.Stats:Toggle({
+  Name = "Auto add point", 
+  Default = false, 
+  Callback = function(v) 
+    _G.Configs.Stats.AutoAdd = v 
+  end
+})
 
-SectionLeftSettings:Slider({
-  Name = "Farm distance",
-  Default = 15,
-  Minimum = 7,
-  Maximum = 18,
-  DisplayMethod = "Value",
-  Callback = function(Value)
-    _G.FarmDistance = Value
-  end,
-}, "FarmDistanceSlider")
+Sections.Stats:Divider()
 
-SectionLeftSettings:Slider({
-  Name = "Tween speed",
-  Default = 250,
-  Minimum = 50,
-  Maximum = 250,
-  DisplayMethod = "Value",
-  Callback = function(Value)
-    _G.TweenSpeed = Value
-  end,
-}, "TweenSpeedSlider")
+Sections.Stats:Toggle({
+  Name = "Melee", 
+  Callback = function(v) 
+    _G.Configs.Stats.Targets.Melee = v 
+  end
+})
 
-SectionLeftSettings:Toggle({
-  Name = "Auto attack",
-  Default = true,
-  Callback = function(value)
-    _G.AutoAttack = value
-  end,
-}, "AutoAttackFlag")
+Sections.Stats:Toggle({
+  Name = "Defense", 
+  Callback = function(v) 
+    _G.Configs.Stats.Targets.Defense = v 
+  end
+})
 
-SectionLeftSettings:Toggle({
-  Name = "Attack players",
-  Default = true,
-  Callback = function(value)
-    _G.AttackPlayers = value
-  end,
-}, "AttackPlayersFlag")
+Sections.Stats:Toggle({
+  Name = "Sword", 
+  Callback = function(v) 
+    _G.Configs.Stats.Targets.Sword = v 
+  end
+})
+
+Sections.Stats:Toggle({
+  Name = "Gun", 
+  Callback = function(v) 
+    _G.Configs.Stats.Targets.Gun = v 
+  end
+})
+
+Sections.Stats:Toggle({
+  Name = "Demon fruit", 
+  Callback = function(v) 
+    _G.Configs.Stats.Targets["Demon Fruit"] = v 
+  end
+})
+
+Sections.Settings:Slider({
+  Name = "Attack speed", 
+  Default = 0.1, 
+  Minimum = 0.1, 
+  Maximum = 1, 
+  DisplayMethod = "Value", 
+  Callback = function(v) 
+    _G.Configs.Attack.Speed = v 
+  end
+})
+
+Sections.Settings:Slider({
+  Name = "Attack distance", 
+  Default = 45, 
+  Minimum = 10, 
+  Maximum = 45, 
+  DisplayMethod = "Value", 
+  Callback = function(v) 
+    _G.Configs.Attack.Distance = v 
+  end
+})
+
+Sections.Settings:Slider({
+  Name = "Farm distance", 
+  Default = 15, 
+  Minimum = 7, 
+  Maximum = 18, 
+  DisplayMethod = "Value", 
+  Callback = function(v) 
+    _G.Configs.Farm.Distance = v 
+  end
+})
+
+Sections.Settings:Slider({
+  Name = "Tween speed", 
+  Default = 250, 
+  Minimum = 50, 
+  Maximum = 250, 
+  DisplayMethod = "Value", 
+  Callback = function(v) 
+    _G.Configs.Farm.TweenSpeed = v 
+  end
+})
+
+Sections.Settings:Toggle({
+  Name = "Auto attack", 
+  Default = true, 
+  Callback = function(v) 
+    _G.Configs.Attack.Enabled = v 
+  end
+})
+
+Sections.Settings:Toggle({
+  Name = "Attack players", 
+  Default = true, 
+  Callback = function(v) 
+    _G.Configs.Attack.Players = v 
+  end
+})
 
 local dragGui = new("ScreenGui", {
   Name = "MarkHubToggleGui", 
-  ResetOnSpawn = false
+  Parent = CoreGui
 })
 
-pcall(function() 
-  dragGui.Parent = CoreGui 
-end)
-
 local dragBtn = new("TextButton", {
-  Size = UDim2.fromOffset(44, 44),
-  Position = UDim2.new(1, -60, 0.5, -22),
-  BackgroundColor3 = Color3.fromRGB(30, 30, 30),
-  Text = "M",
-  TextColor3 = Color3.new(1, 1, 1),
-  Font = Enum.Font.GothamBold,
-  TextSize = 18,
+  Size = UDim2.fromOffset(44, 44), 
+  Position = UDim2.new(1, -60, 0.5, -22), 
+  BackgroundColor3 = Color3.fromRGB(30, 30, 30), 
+  Text = "M", 
+  TextColor3 = Color3.new(1, 1, 1), 
+  Font = Enum.Font.GothamBold, 
+  TextSize = 18, 
   Parent = dragGui
 })
 
@@ -333,34 +429,6 @@ new("UICorner", {
   Parent = dragBtn
 })
 
-local dragging, dragStart, startPos
-
-dragBtn.InputBegan:Connect(function(input)
-  if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-    dragging = true 
-    dragStart = input.Position 
-    startPos = dragBtn.Position
-  end
-end)
-
-UIS.InputChanged:Connect(function(input)
-  if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-    local delta = input.Position - dragStart
-    dragBtn.Position = UDim2.new(
-      startPos.X.Scale, 
-      startPos.X.Offset + delta.X, 
-      startPos.Y.Scale, 
-      startPos.Y.Offset + delta.Y
-    )
-  end
-end)
-
 dragBtn.MouseButton1Click:Connect(function() 
   Window:SetState(not Window:GetState()) 
-end)
-
-UIS.InputEnded:Connect(function(input)
-  if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then 
-    dragging = false 
-  end
 end)
