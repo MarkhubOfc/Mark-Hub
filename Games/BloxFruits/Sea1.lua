@@ -28,6 +28,22 @@ local function tweenTo(config)
   TweenService:Create(hrp, info, {CFrame = config.CFrame}):Play()
 end
 
+local function cleanPhysics()
+  local hrp = lp.Character and lp.Character:FindFirstChild("HumanoidRootPart")
+  if hrp then
+    local bv = hrp:FindFirstChild("TweenStabilizer")
+    if bv then bv:Destroy() end
+    hrp.Velocity = Vector3.zero
+  end
+  if lp.Character then
+    for _, v in pairs(lp.Character:GetDescendants()) do
+      if v:IsA("BasePart") then
+        v.CanCollide = true
+      end
+    end
+  end
+end
+
 local function stopFastAttack()
   if FastAttackModule and FastAttackModule.Toggle then
     FastAttackModule:Toggle(false)
@@ -35,7 +51,7 @@ local function stopFastAttack()
 end
 
 RunService.Stepped:Connect(function()
-  if lp.Character then
+  if (_G.AutoFarmLevel or _G.AutoFarmNearest) and lp.Character then
     for _, v in pairs(lp.Character:GetDescendants()) do
       if v:IsA("BasePart") then
         v.CanCollide = false
@@ -76,10 +92,19 @@ task.spawn(function()
         else
           local Target = nil
           for _, v in pairs(workspace.Enemies:GetChildren()) do
-            if v.Name == LevelData.EnemyName and v.Humanoid.Health > 0 then
-              Target = v
-              break
+            if v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
+              if LevelData.EnemyName:find(" or ") then
+                for name in LevelData.EnemyName:gmatch("[^ or ]+") do
+                  if v.Name == name then
+                    Target = v
+                    break
+                  end
+                end
+              elseif v.Name == LevelData.EnemyName then
+                Target = v
+              end
             end
+            if Target then break end
           end
 
           if Target then
@@ -142,6 +167,9 @@ SectionLeft:Toggle({
   Default = false,
   Callback = function(value)
     _G.AutoFarmLevel = value
+    if not value and not _G.AutoFarmNearest then
+      cleanPhysics()
+    end
   end,
 }, "AutoLevelFlag")
 
@@ -150,6 +178,9 @@ SectionLeft:Toggle({
   Default = false,
   Callback = function(value)
     _G.AutoFarmNearest = value
+    if not value and not _G.AutoFarmLevel then
+      cleanPhysics()
+    end
   end,
 }, "AutoNearestFlag")
 
@@ -195,8 +226,7 @@ end)
 UIS.InputEnded:Connect(function(input)
   if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
     if dragActive and not dragMoved then
-      local currentState = Window:GetState()
-      Window:SetState(not currentState)
+      Window:SetState(not Window:GetState())
     end
     dragActive = false
   end
