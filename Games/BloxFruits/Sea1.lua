@@ -21,6 +21,7 @@ _G.AutoFarmNearest = false
 _G.AttackSpeed = 0.1
 _G.AttackDistance = 45
 _G.FarmDistance = 15
+_G.TweenSpeed = 250
 _G.AutoAttack = true
 _G.AttackPlayers = true
 
@@ -41,7 +42,7 @@ local function tweenTo(config)
   end
   local dist = (hrp.Position - config.CFrame.Position).Magnitude
   local info = TweenInfo.new(
-    dist / (config.Speed or 250), 
+    dist / (_G.TweenSpeed or 250), 
     Enum.EasingStyle.Linear
   )
   currentTween = TweenService:Create(hrp, info, {
@@ -142,8 +143,7 @@ task.spawn(function()
           Char.Humanoid:UnequipTools() 
         end
         tweenTo({
-          CFrame = LevelData.CFrameQuest, 
-          Speed = 250
+          CFrame = LevelData.CFrameQuest
         })
         if (Char.HumanoidRootPart.Position - LevelData.CFrameQuest.Position).Magnitude < 10 then
           CommF:InvokeServer("StartQuest", LevelData.NameQuest, LevelData.LevelQuest)
@@ -155,8 +155,7 @@ task.spawn(function()
         end
         local currentDist = (Char.HumanoidRootPart.Position - TargetPos.Position).Magnitude
         tweenTo({
-          CFrame = TargetPos, 
-          Speed = 250
+          CFrame = TargetPos
         })
         if currentDist <= 30 then
           local tool = lp.Backpack:FindFirstChild("Combat") or Char:FindFirstChild("Combat")
@@ -280,6 +279,17 @@ SectionLeftSettings:Slider({
     _G.FarmDistance = Value
   end,
 }, "FarmDistanceSlider")
+
+SectionLeftSettings:Slider({
+  Name = "Tween speed",
+  Default = 250,
+  Minimum = 50,
+  Maximum = 250,
+  DisplayMethod = "Value",
+  Callback = function(Value)
+    _G.TweenSpeed = Value
+  end,
+}, "TweenSpeedSlider")
 
 SectionLeftSettings:Toggle({
   Name = "Auto attack",
