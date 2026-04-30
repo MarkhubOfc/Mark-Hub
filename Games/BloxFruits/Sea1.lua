@@ -248,7 +248,6 @@ SectionLeftSettings:Slider({
   Minimum = 0.1,
   Maximum = 1,
   DisplayMethod = "Value",
-  Precision = 0.1,
   Callback = function(Value)
     _G.AttackSpeed = Value
   end,
@@ -260,7 +259,6 @@ SectionLeftSettings:Slider({
   Minimum = 10,
   Maximum = 45,
   DisplayMethod = "Value",
-  Precision = 1,
   Callback = function(Value)
     _G.AttackDistance = Value
   end,
@@ -272,7 +270,6 @@ SectionLeftSettings:Slider({
   Minimum = 7,
   Maximum = 18,
   DisplayMethod = "Value",
-  Precision = 1,
   Callback = function(Value)
     _G.FarmDistance = Value
   end,
