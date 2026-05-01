@@ -12,6 +12,7 @@ local FastAttackModule = loadstring(game:HttpGet("https://raw.githubusercontent.
 local MobList1 = loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Mark-Hub/refs/heads/main/Modules/BloxFruits/MobList1.lua"))()
 
 local lp = game:GetService("Players").LocalPlayer
+local Char = lp.Character
 local TweenService = game:GetService("TweenService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -20,19 +21,19 @@ local CoreGui = game:GetService("CoreGui")
 local CommF = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("CommF_")
 
 _G.Configs = {
-  Farm = {
+  ["Farm"] = {
     AutoLevel = false,
     AutoNearest = false,
     Distance = 15,
     TweenSpeed = 250
   },
-  Attack = {
+  ["Attack"] = {
     Enabled = true,
     Players = true,
     Speed = 0.1,
     Distance = 45
   },
-  Stats = {
+  ["Stats"] = {
     AutoAdd = false,
     Amount = 3,
     Targets = {
@@ -42,11 +43,14 @@ _G.Configs = {
       Gun = false,
       ["Demon Fruit"] = false
     }
+  },
+  ["Teleport_Islands"] = {
+    ["Starter marine"] = CFrame.new(-2629, 24, 2099)
   }
 }
 
 local function tweenTo(config)
-  local hrp = lp.Character and lp.Character:FindFirstChild("HumanoidRootPart")
+  local hrp = Char and Char:FindFirstChild("HumanoidRootPart")
   if not hrp or not config.CFrame then
     return
   end
@@ -134,7 +138,6 @@ task.spawn(function()
   while true do
     task.wait(_G.Configs.Attack.Speed)
     pcall(function()
-      local Char = lp.Character
       if not Char or not Char:FindFirstChild("HumanoidRootPart") then
         return
       end
@@ -249,10 +252,14 @@ MainSection = Main:Section({
   Side = "Left"
 })
 
-MainSection:Toggle({
+local AutoFarmNearest = nil
+local AutoFarmLevel = MainSection:Toggle({
   Name = "Auto farm level", 
   Default = false, 
   Callback = function(v) 
+    if AutoFarmNearest:GetState() then
+      AutoFarmNearest:UpdateState(false)
+    end  
     _G.Configs.Farm.AutoLevel = v 
     if not v then
       cleanPhysics()
@@ -260,10 +267,13 @@ MainSection:Toggle({
   end
 })
 
-MainSection:Toggle({
+AutoFarmNearest = MainSection:Toggle({
   Name = "Auto farm nearest", 
   Default = false, 
-  Callback = function(v) 
+  Callback = function(v)
+    if AutoFarmLevel:GetState() then
+      AutoFarmLevel:UpdateState(false)
+    end  
     _G.Configs.Farm.AutoNearest = v 
     if not v then
       cleanPhysics()
@@ -346,6 +356,48 @@ TeleportSection = Teleport:Section({
   Side = "Left"
 })
 
+TeleportSection:Label({
+  Text = "Teleport page"
+})
+
+local SelectedIsland = nil
+TeleportSection:Dropdown({
+  Name = "Select Island",
+  Search = true,
+  Multi = false,
+  Required = true,
+  Options = {
+    "Starter marine"
+  },
+  Default = "Starter marine",
+  Callback = function(V)
+    SelectedIsland = V or "Starter marine"  
+  end      
+})
+
+TeleportSection:Button({
+  Name = "TP Island",
+  Callback = function()
+    if AutoFarmLevel:GetState() then
+      AutoFarmLevel:UpdateState(false)  
+    end
+    if AutoFarmNearest:GetState() then
+      AutoFarmNearest:UpdateState(false)
+    end
+    if Char:FindFirstChild("Combat") then
+      Char.Humanoid:UnequipTools() 
+    end  
+    if SelectedIsland ~= nil then
+      tweenTo({
+        CFrame = _G.Configs.Teleport_Islands[SelectedIsland]
+      })
+      currentTween.Completed:Connect(function(status)
+        cleanPhysics()
+      end)
+    end
+  end      
+})
+
 Settings = Tabs:Tab({
   Name = "Settings", 
   Image = "rbxassetid://10734950309"
@@ -365,7 +417,7 @@ SettingsSection:Slider({
   end
 })
 
-SettingSection:Slider({
+SettingsSection:Slider({
   Name = "Attack distance", 
   Default = 45, 
   Minimum = 10, 
