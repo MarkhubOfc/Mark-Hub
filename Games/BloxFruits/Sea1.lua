@@ -239,34 +239,17 @@ local Window = MacLib:Window({
   Keybind = Enum.KeyCode.RightControl,
   AcrylicBlur = true
 })
+local Tabs = Window:TabGroup()
 
-local UI = {
-  Tabs = Window:TabGroup(),
-  Elements = {}
-}
-
-UI.Elements.Main = UI.Tabs:Tab({
+Main = Tabs:Tab({
   Name = "Main", 
   Image = "rbxassetid://10734949013"
 })
-
-UI.Elements.Stats = UI.Tabs:Tab({
-  Name = "Stats", 
-  Image = "rbxassetid://10734950039"
+MainSection = Main:Section({
+  Side = "Left"
 })
 
-UI.Elements.Settings = UI.Tabs:Tab({
-  Name = "Settings", 
-  Image = "rbxassetid://10734950309"
-})
-
-local Sections = {
-  Main = UI.Elements.Main:Section({Side = "Left"}),
-  Stats = UI.Elements.Stats:Section({Side = "Left"}),
-  Settings = UI.Elements.Settings:Section({Side = "Left"})
-}
-
-Sections.Main:Toggle({
+MainSection:Toggle({
   Name = "Auto farm level", 
   Default = false, 
   Callback = function(v) 
@@ -277,7 +260,7 @@ Sections.Main:Toggle({
   end
 })
 
-Sections.Main:Toggle({
+MainSection:Toggle({
   Name = "Auto farm nearest", 
   Default = false, 
   Callback = function(v) 
@@ -288,11 +271,19 @@ Sections.Main:Toggle({
   end
 })
 
-Sections.Stats:Label({
+Stats = Tabs:Tab({
+  Name = "Stats", 
+  Image = "rbxassetid://10734949013"
+})
+StatsSection = Stats:Section({
+  Side = "Left"
+})
+
+StatsSection:Label({
   Name = "Stats config"
 })
 
-Sections.Stats:Slider({
+StatsSection:Slider({
   Name = "Add point", 
   Default = 3, 
   Minimum = 1, 
@@ -303,7 +294,7 @@ Sections.Stats:Slider({
   end
 })
 
-Sections.Stats:Toggle({
+StatsSection:Toggle({
   Name = "Auto add point", 
   Default = false, 
   Callback = function(v) 
@@ -311,44 +302,59 @@ Sections.Stats:Toggle({
   end
 })
 
-Sections.Stats:Divider()
-
-Sections.Stats:Toggle({
+StatsSection:Divider()
+StatsSection:Toggle({
   Name = "Melee", 
   Callback = function(v) 
     _G.Configs.Stats.Targets.Melee = v 
   end
 })
 
-Sections.Stats:Toggle({
+StatsSection:Toggle({
   Name = "Defense", 
   Callback = function(v) 
     _G.Configs.Stats.Targets.Defense = v 
   end
 })
 
-Sections.Stats:Toggle({
+StatsSection:Toggle({
   Name = "Sword", 
   Callback = function(v) 
     _G.Configs.Stats.Targets.Sword = v 
   end
 })
 
-Sections.Stats:Toggle({
+StatsSection:Toggle({
   Name = "Gun", 
   Callback = function(v) 
     _G.Configs.Stats.Targets.Gun = v 
   end
 })
 
-Sections.Stats:Toggle({
+StatsSection:Toggle({
   Name = "Demon fruit", 
   Callback = function(v) 
     _G.Configs.Stats.Targets["Demon Fruit"] = v 
   end
 })
 
-Sections.Settings:Slider({
+Teleport = Tabs:Tab({
+  Name = "Teleport", 
+  Image = "rbxassetid://10734949013"
+})
+TeleportSection = Teleport:Section({
+  Side = "Left"
+})
+
+Settings = Tabs:Tab({
+  Name = "Settings", 
+  Image = "rbxassetid://10734950309"
+})
+SettingsSection = Settings:Section({
+  Side = "Left"
+})
+
+SettingsSection:Slider({
   Name = "Attack speed", 
   Default = 0.1, 
   Minimum = 0.1, 
@@ -359,7 +365,7 @@ Sections.Settings:Slider({
   end
 })
 
-Sections.Settings:Slider({
+SettingSection:Slider({
   Name = "Attack distance", 
   Default = 45, 
   Minimum = 10, 
@@ -370,7 +376,8 @@ Sections.Settings:Slider({
   end
 })
 
-Sections.Settings:Slider({
+SettingsSection:Divider()
+SettingsSection:Slider({
   Name = "Farm distance", 
   Default = 15, 
   Minimum = 7, 
@@ -381,7 +388,7 @@ Sections.Settings:Slider({
   end
 })
 
-Sections.Settings:Slider({
+SettingsSection:Slider({
   Name = "Tween speed", 
   Default = 250, 
   Minimum = 50, 
@@ -392,7 +399,8 @@ Sections.Settings:Slider({
   end
 })
 
-Sections.Settings:Toggle({
+SettingsSection:Divider()
+SettingsSection:Toggle({
   Name = "Auto attack", 
   Default = true, 
   Callback = function(v) 
@@ -400,7 +408,7 @@ Sections.Settings:Toggle({
   end
 })
 
-Sections.Settings:Toggle({
+SettingsSection:Toggle({
   Name = "Attack players", 
   Default = true, 
   Callback = function(v) 
