@@ -128,7 +128,7 @@ function List:CheckLevel()
       NameQuest = "ColosseumQuest",
       NameMon = "Gladiator",
       LevelQuest = 2,
-      CFrameMon = CFrame.new(-1292.838134765625, 56.380882263183594, -3339.031494140625),
+      CFrameMon = CFrame.new(-1313.13684, 43.8510132, -3319.25),
       CFrameQuest = CFrame.new(-1580.04663, 6.35000277, -2986.47534)
     }
   elseif MyLevel >= 300 and MyLevel <= 324 then
