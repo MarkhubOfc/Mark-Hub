@@ -368,7 +368,7 @@ if game.PlaceId == 7449423635 then
     Title = "Mark Hub - Blox Fruits",
     SubTitle = "by Rain",
     TabWidth = 160,
-    Size = UDim2.fromOffset(580, 460),
+    Size = UDim2.fromOffset(500, 430),
     Acrylic = true,
     Theme = "Dark",
     MinimizeKey = Enum.KeyCode.RightControl
