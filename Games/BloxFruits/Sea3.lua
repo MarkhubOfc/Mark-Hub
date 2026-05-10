@@ -315,6 +315,7 @@ if game.PlaceId == 7449423635 then
       if hum then
         hum.AutoRotate = true
         hum.PlatformStand = false
+        hum.Sit = false
       end
 
       for part, original in pairs(noclipParts) do
@@ -397,6 +398,9 @@ if game.PlaceId == 7449423635 then
       if v then
         AutoBuso = RunService.Heartbeat:Connect(function()
           pcall(function()
+            if not Char then
+              return
+            end
             if not Char:FindFirstChild("HasBuso") then
               CommF:InvokeServer("Buso")
             end
@@ -443,6 +447,9 @@ if game.PlaceId == 7449423635 then
               end
 
               local LevelData = MobList3:CheckLevel()
+              if not LevelData then
+                return
+              end
 
               if not lp.PlayerGui.Main.Quest.Visible then
                 if FightingStyleMode == "Combat" then
@@ -676,156 +683,280 @@ if game.PlaceId == 7449423635 then
   })
 
   local AutoSeaBeastActive = false
-  SeaEventSection:AddToggle("AutoSeaBeast", {
+  local AutoSeaBeastToggle = nil
+  AutoSeaBeastToggle = SeaEventSection:AddToggle("AutoSeaBeast", {
     Title = "Auto sea beast",
     Default = false,
     Callback = function(v)
       AutoSeaBeastActive = v
       
-      if v then
-        task.spawn(function()
-          local success, err = pcall(function()
-            if _G.Configs.Farm.AutoLevel then
-              AutoFarmLevelToggle:SetValue(false)
-            end
-            if _G.Configs.Farm.AutoNearest then
-              AutoFarmNearestToggle:SetValue(false)
-            end
-            task.wait(0.3)
-            cleanPhysics()
+      if not v then
+        task.wait(0.3)
+        cleanPhysics()
+        return
+      end
+      
+      task.spawn(function()
+        local success, err = pcall(function()
+          if not AutoSeaBeastActive then
+            return
+          end
+
+          if _G.Configs.Farm.AutoLevel then
+            AutoFarmLevelToggle:SetValue(false)
+          end
+          if _G.Configs.Farm.AutoNearest then
+            AutoFarmNearestToggle:SetValue(false)
+          end
+          task.wait(0.3)
+          cleanPhysics()
+          
+          if not Char or not Char:FindFirstChild("HumanoidRootPart") then
+            error("Character not found")
+          end
+          
+          local dockCFrame = _G.Configs.Sea.DockPosition
+          tweenTo({CFrame = dockCFrame})
+          
+          local arrived = false
+          local maxWait = 60
+          local waited = 0
+          
+          while AutoSeaBeastActive and waited < maxWait do
+            task.wait(0.5)
+            waited = waited + 0.5
             
-            if not Char or not Char:FindFirstChild("HumanoidRootPart") then
-              error("Character not found")
-            end
-            
-            local dockCFrame = _G.Configs.Sea.DockPosition
-            tweenTo({CFrame = dockCFrame})
-            
-            local arrived = false
-            local maxWait = 60
-            local waited = 0
-            
-            while AutoSeaBeastActive and waited < maxWait do
-              task.wait(0.5)
-              waited = waited + 0.5
-              
-              if not Char or not Char:FindFirstChild("HumanoidRootPart") then
-                error("Character lost during travel")
-              end
-              
-              local dist = (Char.HumanoidRootPart.Position - dockCFrame.Position).Magnitude
-              if dist < 25 then
-                arrived = true
-                break
-              end
-            end
-            
-            if not arrived then
-              error("Failed to reach dock")
+            if not AutoSeaBeastActive then
+              return
             end
             
-            if not AutoSeaBeastActive then return end
-            
-            local remotesFolder = ReplicatedStorage:FindFirstChild("Remotes")
-            if not remotesFolder then
-              error("Remotes folder not found")
+            if not Char or not Char:FindFirstChild("HumanoidRootPart") or not Char:FindFirstChild("Humanoid") then
+              error("Character lost during travel")
             end
             
-            local commF = remotesFolder:FindFirstChild("CommF_")
-            if not commF then
-              error("CommF_ remote not found")
+            local hum = Char.Humanoid
+            if hum.Health <= 0 then
+              error("Character died during travel")
             end
             
-            local buySuccess, buyErr = pcall(function()
-              commF:InvokeServer("BuyBoat", _G.Configs.Sea.SelectedBoat)
-            end)
-            
-            if not buySuccess then
-              error("Failed to buy boat: " .. tostring(buyErr))
+            local dist = (Char.HumanoidRootPart.Position - dockCFrame.Position).Magnitude
+            if dist < 25 then
+              arrived = true
+              break
+            end
+          end
+          
+          if not arrived then
+            error("Failed to reach dock")
+          end
+          
+          if not AutoSeaBeastActive then
+            return
+          end
+          
+          local remotesFolder = ReplicatedStorage:FindFirstChild("Remotes")
+          if not remotesFolder then
+            error("Remotes folder not found")
+          end
+          
+          local commF = remotesFolder:FindFirstChild("CommF_")
+          if not commF then
+            error("CommF_ remote not found")
+          end
+          
+          local buySuccess, buyErr = pcall(function()
+            commF:InvokeServer("BuyBoat", _G.Configs.Sea.SelectedBoat)
+          end)
+          
+          if not buySuccess then
+            error("Failed to buy boat: " .. tostring(buyErr))
+          end
+          
+          task.wait(3)
+          
+          if not AutoSeaBeastActive then
+            return
+          end
+          
+          local myBoat = nil
+          local boatsFolder = workspace:FindFirstChild("Boats")
+          
+          if not boatsFolder then
+            error("Boats folder not found in workspace")
+          end
+          
+          local maxRetries = 10
+          local retryCount = 0
+          
+          while not myBoat and retryCount < maxRetries and AutoSeaBeastActive do
+            if not AutoSeaBeastActive then
+              return
             end
             
-            task.wait(3)
-            
-            local myBoat = nil
-            local boatsFolder = workspace:FindFirstChild("Boats")
-            
-            if not boatsFolder then
-              error("Boats folder not found in workspace")
-            end
-            
-            local maxRetries = 10
-            local retryCount = 0
-            
-            while not myBoat and retryCount < maxRetries and AutoSeaBeastActive do
-              for _, boat in pairs(boatsFolder:GetChildren()) do
-                if boat.Name == _G.Configs.Sea.SelectedBoat then
-                  local owner = boat:FindFirstChild("Owner")
-                  if owner and owner:IsA("ObjectValue") and owner.Value then
-                    if owner.Value.Name == lp.Name then
-                      myBoat = boat
-                      break
-                    end
+            for _, boat in pairs(boatsFolder:GetChildren()) do
+              if boat.Name == _G.Configs.Sea.SelectedBoat then
+                local owner = boat:FindFirstChild("Owner")
+                if owner and owner:IsA("ObjectValue") and owner.Value then
+                  if owner.Value.Name == lp.Name then
+                    myBoat = boat
+                    break
                   end
                 end
-              end
-              
-              if not myBoat then
-                retryCount = retryCount + 1
-                task.wait(1)
               end
             end
             
             if not myBoat then
-              error("Boat not found after purchase")
-            end
-            
-            local seat = myBoat:FindFirstChild("VehicleSeat")
-            if not seat then
-              error("VehicleSeat not found in boat")
-            end
-            
-            tweenTo({CFrame = seat.CFrame * CFrame.new(0, 3, 0)})
-            
-            local seatReached = false
-            local seatWait = 0
-            
-            while AutoSeaBeastActive and seatWait < 30 do
-              task.wait(0.5)
-              seatWait = seatWait + 0.5
-              
-              if not Char or not Char:FindFirstChild("HumanoidRootPart") then
-                error("Character lost during boat approach")
-              end
-              
-              if not myBoat or not myBoat.Parent then
-                error("Boat was destroyed")
-              end
-              
-              local dist = (Char.HumanoidRootPart.Position - seat.Position).Magnitude
-              if dist < 10 then
-                seatReached = true
-                break
-              end
-            end
-            
-            if not seatReached then
-              error("Failed to reach boat seat")
-            end
-            
-            while AutoSeaBeastActive do
+              retryCount = retryCount + 1
               task.wait(1)
-              if not myBoat or not myBoat.Parent then
-                error("Boat no longer exists")
-              end
             end
-          end)
+          end
           
-          if not success then
-            warn("[Auto Sea Beast] Error: " .. tostring(err))
-            AutoSeaBeastActive = false
+          if not myBoat then
+            error("Boat not found after purchase")
+          end
+          
+          if not AutoSeaBeastActive then
+            return
+          end
+          
+          local seat = myBoat:FindFirstChild("VehicleSeat")
+          if not seat then
+            error("VehicleSeat not found in boat")
+          end
+          
+          tweenTo({CFrame = seat.CFrame * CFrame.new(0, 3, 0)})
+          
+          local seatReached = false
+          local seatWait = 0
+          
+          while AutoSeaBeastActive and seatWait < 30 do
+            task.wait(0.5)
+            seatWait = seatWait + 0.5
+            
+            if not AutoSeaBeastActive then
+              return
+            end
+            
+            if not Char or not Char:FindFirstChild("HumanoidRootPart") or not Char:FindFirstChild("Humanoid") then
+              error("Character lost during boat approach")
+            end
+            
+            local hum = Char.Humanoid
+            if hum.Health <= 0 then
+              error("Character died during boat approach")
+            end
+            
+            if not myBoat or not myBoat.Parent then
+              error("Boat was destroyed")
+            end
+            
+            if not seat or not seat.Parent then
+              error("VehicleSeat was destroyed")
+            end
+            
+            local dist = (Char.HumanoidRootPart.Position - seat.Position).Magnitude
+            if dist < 10 then
+              seatReached = true
+              break
+            end
+          end
+          
+          if not seatReached then
+            error("Failed to reach boat seat")
+          end
+          
+          if not AutoSeaBeastActive then
+            return
+          end
+          
+          cleanPhysics()
+          
+          if not seat or not seat.Parent then
+            error("VehicleSeat disappeared before sitting")
+          end
+          
+          local hum = Char:FindFirstChild("Humanoid")
+          if hum then
+            hum.Sit = true
+            seat:Sit(hum)
+          end
+          
+          local seated = false
+          local sitWait = 0
+          
+          while AutoSeaBeastActive and sitWait < 10 do
+            task.wait(0.5)
+            sitWait = sitWait + 0.5
+            
+            if not AutoSeaBeastActive then
+              if hum and hum.Sit then
+                hum.Sit = false
+              end
+              return
+            end
+            
+            if not Char or not Char:FindFirstChild("Humanoid") then
+              error("Character lost while trying to sit")
+            end
+            
+            hum = Char.Humanoid
+            
+            if hum.Sit and hum.SeatPart == seat then
+              seated = true
+              break
+            end
+            
+            if not seated then
+              hum.Sit = true
+              pcall(function()
+                seat:Sit(hum)
+              end)
+            end
+          end
+          
+          if not seated then
+            error("Failed to sit on boat")
+          end
+          
+          while AutoSeaBeastActive do
+            task.wait(1)
+            
+            if not AutoSeaBeastActive then
+              if hum and hum.Sit then
+                hum.Sit = false
+              end
+              return
+            end
+            
+            if not Char or not Char:FindFirstChild("Humanoid") then
+              error("Character lost while seated")
+            end
+            
+            hum = Char.Humanoid
+            
+            if hum.Health <= 0 then
+              error("Character died while seated")
+            end
+            
+            if not myBoat or not myBoat.Parent then
+              error("Boat was destroyed while seated")
+            end
+            
+            if not hum.Sit or hum.SeatPart ~= seat then
+              error("Player unseated from boat")
+            end
           end
         end)
-      end
+        
+        if not success then
+          warn("[Auto Sea Beast] Error: " .. tostring(err))
+          AutoSeaBeastActive = false
+          if AutoSeaBeastToggle then
+            AutoSeaBeastToggle:SetValue(false)
+          end
+          cleanPhysics()
+        end
+      end)
     end
   })
 
@@ -838,12 +969,14 @@ if game.PlaceId == 7449423635 then
     Title = "Roll gacha fruit",
     Description = "",
     Callback = function()
-      local args = {
-        "Cousin",
-        "Buy",
-        "DLCBoxData"
-      }
-      game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("CommF_"):InvokeServer(unpack(args))
+      pcall(function()
+        local args = {
+          "Cousin",
+          "Buy",
+          "DLCBoxData"
+        }
+        ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("CommF_"):InvokeServer(unpack(args))
+      end)
     end
   })
   
@@ -852,7 +985,9 @@ if game.PlaceId == 7449423635 then
     Title = "Buy air jump",
     Description = "Cost: 10000",
     Callback = function()
-      CommF:InvokeServer("BuyHaki", "Geppo")
+      pcall(function()
+        CommF:InvokeServer("BuyHaki", "Geppo")
+      end)
     end
   })
   
@@ -860,7 +995,9 @@ if game.PlaceId == 7449423635 then
     Title = "Buy buso",
     Description = "Cost: 25000",
     Callback = function()
-      CommF:InvokeServer("BuyHaki", "Buso")
+      pcall(function()
+        CommF:InvokeServer("BuyHaki", "Buso")
+      end)
     end
   })
 
@@ -875,6 +1012,10 @@ if game.PlaceId == 7449423635 then
     Default = false,
     Callback = function(v)
       _G.Configs.Fruit.AutoGet = v
+      if not v then
+        task.wait(0.3)
+        cleanPhysics()
+      end
     end
   })
 
@@ -938,8 +1079,15 @@ if game.PlaceId == 7449423635 then
         end
       end)
 
-      while not gone do
+      while not gone and _G.Configs.Fruit.AutoGet do
         task.wait()
+        if not _G.Configs.Fruit.AutoGet then
+          break
+        end
+      end
+
+      if conn then
+        conn:Disconnect()
       end
 
       GetAFruit = false
@@ -949,8 +1097,13 @@ if game.PlaceId == 7449423635 then
 
     workspace.ChildAdded:Connect(handleFruit)
 
-    local fruitSpawns = workspace:WaitForChild("_WorldOrigin"):WaitForChild("FruitSpawns")
-    fruitSpawns.ChildAdded:Connect(handleFruit)
+    local worldOrigin = workspace:WaitForChild("_WorldOrigin")
+    if worldOrigin then
+      local fruitSpawns = worldOrigin:WaitForChild("FruitSpawns")
+      if fruitSpawns then
+        fruitSpawns.ChildAdded:Connect(handleFruit)
+      end
+    end
   end)
   
   local StatsTab = Window:AddTab({
@@ -981,6 +1134,10 @@ if game.PlaceId == 7449423635 then
           while _G.Configs.Stats.AutoAdd do
             task.wait(0.5)
             pcall(function()
+              if not _G.Configs.Stats.AutoAdd then
+                return
+              end
+              
               local pPoints = lp.Data:FindFirstChild("Points")
               if pPoints and pPoints.Value > 0 then
                 local activeStats = {}
@@ -993,6 +1150,9 @@ if game.PlaceId == 7449423635 then
                 if #activeStats > 0 then
                   local toSpend = math.min(pPoints.Value, _G.Configs.Stats.Amount)
                   for i = 1, toSpend do
+                    if not _G.Configs.Stats.AutoAdd then
+                      break
+                    end
                     local target = activeStats[(i - 1) % #activeStats + 1]
                     CommF:InvokeServer("AddPoint", target, 1)
                   end
@@ -1123,7 +1283,9 @@ if game.PlaceId == 7449423635 then
   TeleportTabSeaSection:AddButton({
     Title = "TP to sea 1",
     Callback = function()
-      CommF:InvokeServer("DressrosaQuestProgress", "Dressrosa")
+      pcall(function()
+        CommF:InvokeServer("DressrosaQuestProgress", "Dressrosa")
+      end)
     end
   })
 
@@ -1199,6 +1361,10 @@ if game.PlaceId == 7449423635 then
           while _G.Configs.Attack.Enabled do
             task.wait(_G.Configs.Attack.Speed)
             pcall(function()
+              if not _G.Configs.Attack.Enabled then
+                return
+              end
+
               if not Char then
                 Char = lp.Character
               end
