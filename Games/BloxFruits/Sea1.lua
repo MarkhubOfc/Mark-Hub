@@ -357,10 +357,10 @@ if game.PlaceId == 2753915549 then
   end)
 
   local Window = Fluent:CreateWindow({
-    Title = "Mark Hub - Blox Fruits",
-    SubTitle = "by Rain",
+    Title = "Zynkore Hub : Blox Fruits",
+    SubTitle = "by Zynkore",
     TabWidth = 160,
-    Size = UDim2.fromOffset(580, 460),
+    Size = UDim2.fromOffset(500, 400),
     Acrylic = true,
     Theme = "Dark",
     MinimizeKey = Enum.KeyCode.RightControl
