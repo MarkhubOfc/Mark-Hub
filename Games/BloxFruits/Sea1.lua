@@ -14,7 +14,7 @@ if game.PlaceId == 2753915549 then
   local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
   local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
   local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
-  local MobList1 = loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Mark-Hub/refs/heads/main/Modules/BloxFruits/MobList1.lua"))()
+  local MobList1 = loadstring(game:HttpGet("https://raw.githubusercontent.com/Zynkore/Mark-Hub/refs/heads/main/Modules/BloxFruits/MobList1.lua"))()
 
   local lp = game:GetService("Players").LocalPlayer
   local Char = lp.Character or lp.CharacterAdded:Wait()
