@@ -1,4 +1,4 @@
-# Mark Hub
+# Zynkore Hub
 
 ## Loader ( Main )
 ```lua
