@@ -1,6 +1,6 @@
 # Zynkore Hub
-## Open source and keylles
-## Sou brasileiro
+* Open source and keylles
+* Sou brasileiro
 
 ## Loader ( Main )
 ```lua
