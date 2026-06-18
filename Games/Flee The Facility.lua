@@ -47,7 +47,7 @@ InfoTab:AddParagraph({
 InfoTab:AddParagraph({
   'Added:',
   [[
-   [?]
+   [+] Update chegando...
   ]]
 })
 
