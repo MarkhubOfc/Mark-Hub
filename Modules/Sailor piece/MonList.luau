@@ -7,6 +7,7 @@ function Module:CheckLevel()
     return {
       MonName = 'Thief',
       MonValue = 5,
+      QuestTitle = 'Thief Hunter',
       QuestPos = CFrame.new(166, 16, -215)
     }
   end
