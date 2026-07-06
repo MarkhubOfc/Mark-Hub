@@ -1,5 +1,5 @@
 local success, GameList = pcall(function()
-  return loadstring(game:HttpGet("https://raw.githubusercontent.com/Zynkore/Hub/refs/heads/main/List.lua"))()
+  return loadstring(game:HttpGet("https://raw.githubusercontent.com/Zynkore/Hub/refs/heads/main/List.luau"))()
 end)
 
 if success and GameList then
