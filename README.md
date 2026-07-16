@@ -7,7 +7,7 @@
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Zynkore/Hub/refs/heads/main/Main.lua"))()
 ```
 
-## Flee the facility ( Update in Main Loader)
+## Flee the facility
 ```lua
 loadstring(game:HttpGet('https://raw.githubusercontent.com/Zynkore/Hub/refs/heads/main/Games/Flee%20The%20Facility.lua'))()
 ```
