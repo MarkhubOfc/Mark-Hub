@@ -1,8 +1,7 @@
 repeat task.wait(0.25) until game:IsLoaded()
 
--- Opa :3
 local GameToJoin = 6250795236
-if game.PlaceId == GameToJoin then
+if game.PlaceId == GameToJoin then -- :3
   local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/tlredz/Library/refs/heads/main/redz-V5-remake/main.luau'))()
   
   local Window = Library:MakeWindow({
@@ -56,12 +55,6 @@ if game.PlaceId == GameToJoin then
       end
     end
   end)
-  
-  -- Attributes
-  local IsTitan = LP:GetAttribute('Titan')
-  local IsGrabed = LP:GetAttribute('Grabed')
-  local IsPlayerInHand = LP:GetAttribute('TitanGraber')
-  local TransformByKnife = LP:GetAttribute('KnifeTransform')
   
   -- Modules
   local TweenModule = loadstring(game:HttpGet('https://raw.githubusercontent.com/Zynkore/Hub/refs/heads/main/Modules/Universal/TweenModule.luau'))()
@@ -130,10 +123,10 @@ if game.PlaceId == GameToJoin then
     Description = "Only if you're a Titan and the target is human.",
     Debounce = 0.5,
     Callback = function()
-      if IsTitan == true then
+      if LP:GetAttribute('Titan') == true then
         local NearestP = GetNearestPlayer(false)
         if NearestP ~= nil then
-          if NearestP:GetAttribute('Grabed') == false and IsPlayerInHand == false then
+          if NearestP:GetAttribute('Grabed') == false and LP:GetAttribute('TitanGraber') == false then
             Args = {
               'Grab',
               NearestP.Character:WaitForChild('Humanoid'),
@@ -181,11 +174,11 @@ if game.PlaceId == GameToJoin then
             break
           end
           if Char and Char:WaitForChild('Humanoid').Health >= 1 then
-            if IsTitan == true then
+            if LP:GetAttribute('Titan') == true then
               local NearestP = GetNearestPlayer(false, false)
               if NearestP ~= nil then
-                if IsPlayerInHand == false then
-                  if IsGrabed == false then
+                if LP:GetAttribute('TitanGraber') == false then
+                  if LP:GetAttribute('Grabed') == false then
                     Args = {
                       'Grab',
                       NearestP.Character:WaitForChild('Humanoid'),
@@ -250,7 +243,7 @@ if game.PlaceId == GameToJoin then
         if Auto_eat_player == false then
           break
         end
-        if IsPlayerInHand == true then
+        if LP:GetAttribute('TitanGraber') == true then
           local Args = {
             'Eat',
             {},
@@ -271,7 +264,7 @@ if game.PlaceId == GameToJoin then
     Flag = 'No_transform_cooldown',
     Callback = function(V)
       if V then
-        if TransformByKnife == false then
+        if LP:GetAttribute('KnifeTransform') == false then
           LP:SetAttribute('KnifeTransform', true)
         end
         No_transform_cooldown = LP:GetAttributeChangedSignal('KnifeTransform'):Connect(function()
@@ -330,6 +323,7 @@ if game.PlaceId == GameToJoin then
   
   local OriginalPlayerSpeed = 16
   local PlayerSpeed = 16
+  
   
   
   local NoclipParts = {}
@@ -489,7 +483,7 @@ if game.PlaceId == GameToJoin then
           HRP.CFrame = NearestItem:GetPivot()
           fireproximityprompt(NearestItem:WaitForChild('ProximityPrompt'), 1)
         elseif TeleportMode == 'Tween' then
-          if IsTitan == false then
+          if LP:GetAttribute('Titan') == false then
             TweenModule:TweenTo({
               CFrame = NearestItem:GetPivot() + Vector3.new(0, 4.5, 0),
               Speed = TweenSpeed
@@ -649,6 +643,21 @@ if game.PlaceId == GameToJoin then
     Flag = 'TweenSpeed',
     Callback = function(V)
       TweenSpeed = V
+    end
+  })
+  
+  SettingsTab:AddDropdown({
+    Title = 'Hub language',
+    MultiSelect = false,
+    Options = {'EN', 'PT-BR'},
+    Default = 'EN',
+    Flag = 'SelectedLanguage',
+    Callback = function(V)
+      if V == 'EN' then
+        
+      elseif V == 'PT-BR' then
+        
+      end
     end
   })
   
