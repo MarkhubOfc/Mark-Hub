@@ -40,7 +40,7 @@ function Module:Check()
       QPos = CFrame.new(-1140, 5, 3827),
       CPos = CFrame.new(-1208, 5, 3921)
     }
-  elseif MyLevel >= 40 then
+  elseif MyLevel >= 40 and MyLevel <= 59 then
     return {
       MonName = 'Brute',
       QName = 'BuggyQuest1',
@@ -48,6 +48,15 @@ function Module:Check()
       QTitle = 'Defeat 8 Brutes',
       QPos = CFrame.new(-1140, 5, 3827),
       CPos = CFrame.new(-1124, 15, 4295)
+    }
+  elseif MyLevel >= 60 then
+    return {
+      MonName = 'Desert Bandit',
+      QName = 'DesertQuest',
+      QLevel = 1,
+      QTitle = 'Defeat 8 Desert Bandits',
+      QPos = CFrame.new(897, 6, 4388),
+      CPos = CFrame.new(958, 15, 4401)
     }
   end
 end
