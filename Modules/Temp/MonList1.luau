@@ -34,11 +34,11 @@ function Module:Check()
   elseif MyLevel >= 30 then
     return {
       MonName = 'Pirate',
-      QName = '',
+      QName = 'BuggyQuest1',
       QLevel = 1,
       QTitle = 'Defeat 8 Pirates',
       QPos = CFrame.new(-1140, 5, 3827),
-      CPos = CFrame.new()
+      CPos = CFrame.new(-1208, 5, 3921)
     }
   end
 end
