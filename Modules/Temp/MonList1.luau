@@ -22,13 +22,22 @@ function Module:Check()
       QPos = CFrame.new(-1603, 37, 154),
       CPos = CFrame.new(-1609, 37, 127)
     }
-  elseif MyLevel >= 15 then
+  elseif MyLevel >= 15 and MyLevel <= 29 then
     return {
       MonName = 'Gorilla',
       QName = 'JungleQuest',
       QLevel = 2,
       QTitle = 'Defeat 8 Gorillas',
       QPos = CFrame.new(-1603, 37, 154),
+      CPos = CFrame.new(-1325, 19, -551)
+    }
+  elseif MyLevel >= 30 then
+    return {
+      MonName = 'Pirate',
+      QName = '',
+      QLevel = 1,
+      QTitle = 'Defeat 8 Pirates',
+      QPos = CFrame.new(-1140, 5, 3827),
       CPos = CFrame.new(-1325, 19, -551)
     }
   end
