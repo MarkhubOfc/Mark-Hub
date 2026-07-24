@@ -1,6 +1,6 @@
 local Module = {}
 
-function Module.Check()
+function Module:Check()
   local MyLevel = (cloneref and cloneref(game:GetService('Players')) or game:GetService('Players')).LocalPlayer:WaitForChild('Data'):WaitForChild('Level').Value
   if (MyLevel >= 0 or MyLevel <= 9) then
     return {
