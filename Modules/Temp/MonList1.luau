@@ -18,7 +18,7 @@ function Module:Check()
       MonName = 'Monkey',
       QName = 'JungleQuest',
       QLevel = 1,
-      QTitle = 'Defeat 6 Monkeys'
+      QTitle = 'Defeat 6 Monkeys',
       QPos = CFrame.new(-1603, 37, 154, 1, 0, 0, 0, 1, 0, 0, 0, 1),
       CPos = CFrame.new(-1609, 37, 127, 1, 0, 0, 0, 1, 0, 0, 0, 1)
     }
@@ -40,10 +40,10 @@ end
       MonName = 'Mon name',
       QName = 'Quest Name',
       QLevel = Quest level,
-      QTitle = 'Defeat Number Mon'
+      QTitle = 'Defeat Number Mon',
       QPos = CFrame.new(Quest cframe),
       CPos = CFrame.new(No mon cframe)
-  }
+    }
 ]]
 
 return Module
