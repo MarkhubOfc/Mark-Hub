@@ -19,8 +19,8 @@ function Module:Check()
       QName = 'JungleQuest',
       QLevel = 1,
       QTitle = 'Defeat 6 Monkeys',
-      QPos = CFrame.new(-1603, 37, 154, 1, 0, 0, 0, 1, 0, 0, 0, 1),
-      CPos = CFrame.new(-1609, 37, 127, 1, 0, 0, 0, 1, 0, 0, 0, 1)
+      QPos = CFrame.new(-1603, 37, 154),
+      CPos = CFrame.new(-1609, 37, 127)
     }
   else
     return {
