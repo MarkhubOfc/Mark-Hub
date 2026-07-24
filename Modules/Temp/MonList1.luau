@@ -5,7 +5,7 @@ function Module.Check()
   if (MyLevel >= 0 or MyLevel <= 9) then
     return {
       MonName = 'Bandit',
-      QName = '',
+      QName = 'BanditQuest1',
       QLevel = 1,
       QTitle = '',
       QPos = CFrame.new(1065, 17, 1546, 1, 0, 0, 0, 1, 0, 0, 0, 1),
