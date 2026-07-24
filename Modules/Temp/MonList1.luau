@@ -4,7 +4,7 @@ function Module:Check()
   local plr = (cloneref and cloneref(game:GetService('Players')) or game:GetService('Players'))
   local MyLevel = plr.LocalPlayer:WaitForChild('Data'):WaitForChild('Level').Value
 
-  if MyLevel >= 0 and MyLevel <= 9 then
+  if MyLevel >= 0 then
     return {
       MonName = 'Bandit',
       QName = 'BanditQuest1',
