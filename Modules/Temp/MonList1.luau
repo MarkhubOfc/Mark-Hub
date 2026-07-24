@@ -76,7 +76,7 @@ function Module:Check()
       QPos = CFrame.new(1384, 87, -1294),
       CPos = CFrame.new(1372, 103, -1405)
     }
-  elseif MyLevel >= 100 then
+  elseif MyLevel >= 100 and MyLevel <= 119 then
     return {
       MonName = 'Snowman',
       QName = 'SnowQuest',
@@ -84,6 +84,15 @@ function Module:Check()
       QTitle = 'Defeat 8 Snowmans',
       QPos = CFrame.new(1384, 87, -1294),
       CPos = CFrame.new(1158, 107, -1503)
+    }
+  elseif MyLevel >= 120 then
+    return {
+      MonName = 'Chief Petty Officer',
+      QName = 'MarineQuest2',
+      QLevel = 1,
+      QTitle = 'Defeat 8 Chief Petty Officers',
+      QPos = CFrame.new(-5036, 29, 4325),
+      CPos = CFrame.new(-4922, 21, 3997)
     }
   end
 end
