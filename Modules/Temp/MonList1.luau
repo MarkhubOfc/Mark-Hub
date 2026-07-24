@@ -38,7 +38,7 @@ function Module:Check()
       QLevel = 1,
       QTitle = 'Defeat 8 Pirates',
       QPos = CFrame.new(-1140, 5, 3827),
-      CPos = CFrame.new(-1325, 19, -551)
+      CPos = CFrame.new()
     }
   end
 end
