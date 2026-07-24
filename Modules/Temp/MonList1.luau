@@ -13,7 +13,7 @@ function Module:Check()
       QPos = CFrame.new(1065, 17, 1546, 1, 0, 0, 0, 1, 0, 0, 0, 1),
       CPos = CFrame.new(1072.92896, 15.864502, 1354.30603, 1, 0, 0, 0, 1, 0, 0, 0, 1)
     }
-  elseif MyLevel >= 10 then
+  elseif MyLevel >= 10 and MyLevel <= 14 then
     return {
       MonName = 'Monkey',
       QName = 'JungleQuest',
@@ -21,6 +21,15 @@ function Module:Check()
       QTitle = 'Defeat 6 Monkeys',
       QPos = CFrame.new(-1603, 37, 154),
       CPos = CFrame.new(-1609, 37, 127)
+    }
+  elseif MyLevel >= 15 then
+    return {
+      MonName = 'Gorilla',
+      QName = 'JungleQuest',
+      QLevel = 2,
+      QTitle = 'Defeat 8 Gorillas',
+      QPos = CFrame.new(-1603, 37, 154),
+      CPos = CFrame.new(-1325, 19, -551)
     }
   end
 end
