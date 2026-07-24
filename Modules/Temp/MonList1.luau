@@ -4,7 +4,7 @@ function Module:Check()
   local plr = (cloneref and cloneref(game:GetService('Players')) or game:GetService('Players'))
   local MyLevel = plr.LocalPlayer:WaitForChild('Data'):WaitForChild('Level').Value
 
-  if (MyLevel >= 0 or MyLevel <= 9) then
+  if MyLevel >= 0 and MyLevel <= 9 then
     return {
       MonName = 'Bandit',
       QName = 'BanditQuest1',
@@ -13,7 +13,7 @@ function Module:Check()
       QPos = CFrame.new(1065, 17, 1546, 1, 0, 0, 0, 1, 0, 0, 0, 1),
       CPos = CFrame.new(1072.92896, 15.864502, 1354.30603, 1, 0, 0, 0, 1, 0, 0, 0, 1)
     }
-  elseif (MyLevel >= 10) then
+  elseif MyLevel >= 10 then
     return {
       MonName = 'Monkey',
       QName = 'JungleQuest',
@@ -35,7 +35,7 @@ function Module:Check()
 end
 
 --[[
-  elseif (MyLevel >= Number) then
+  elseif MyLevel >= Number then
     return {
       MonName = 'Mon name',
       QName = 'Quest Name',
