@@ -72,7 +72,7 @@ function Module:Check()
       MonName = 'Snow Bandit',
       QName = 'SnowQuest',
       QLevel = 1,
-      QTitle = 'Defeat 8 Snow Bandits',
+      QTitle = 'Defeat 7 Snow Bandits',
       QPos = CFrame.new(1384, 87, -1294),
       CPos = CFrame.new(1372, 103, -1405)
     }
