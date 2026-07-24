@@ -1,19 +1,16 @@
 local TweenModule = {}
 local TS = game:GetService('TweenService')
 local Players = game:GetService('Players')
-local RunService = game:GetService('RunService')
 
 local LP = Players.LocalPlayer
 local Char = LP.Character or LP.CharacterAdded:Wait()
 local HRP = Char:WaitForChild('HumanoidRootPart')
 local Humanoid = Char:WaitForChild('Humanoid')
+local TorsoPart = nil
 local Mode = 'R15'
 
 local CurrentTween = nil
 local FlyBV = nil
-local NoclipConnection = nil
-local NoclipParts = {}
-local TweenId = 0
 
 local function new(c, p)
 	local k = Instance.new(c)
@@ -28,39 +25,37 @@ local function UpdateCharacterReferences()
 	Char = LP.Character
 	HRP = Char:WaitForChild('HumanoidRootPart', 5)
 	Humanoid = Char:WaitForChild('Humanoid', 5)
+	if Mode == 'R6' then
+		TorsoPart = Char:FindFirstChild('Torso')
+	elseif Mode == 'R15' then
+		TorsoPart = Char:FindFirstChild('UpperTorso')
+	end
 end
 
-LP.CharacterAdded:Connect(function()
-	TweenModule:CancelTween()
-	UpdateCharacterReferences()
-end)
+LP.CharacterAdded:Connect(UpdateCharacterReferences)
 UpdateCharacterReferences()
 
 function TweenModule:SetGameMode(mode)
 	if mode == 'R6' or mode == 'R15' then
 		Mode = mode
+		UpdateCharacterReferences()
 	end
 end
 
+function TweenModule:SetNoclip(Value)
+	
+end
+
 function TweenModule:TweenTo(Config)
-	if CurrentTween then
-		local t = CurrentTween
-		CurrentTween = nil
-		t:Cancel()
-	end
-	
-	TweenId = TweenId + 1
-	local MyId = TweenId
-	
 	local TweenCframe = Config[1] or Config.CF or Config.CFrame or Config.Pos or Config.Position
 	local TweenSpeed = Config[2] or Config.Speed or Config.S or 250
 	
 	if HRP and TweenCframe then
 		local dist = (TweenCframe.Position - HRP.Position).Magnitude
-		local time = math.max(dist / TweenSpeed, 0.05)
+		local time = dist / TweenSpeed
 		local info = TweenInfo.new(time, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
 		local goal = {CFrame = TweenCframe}
-		
+		CurrentTween = TS:Create(HRP, info, goal)
 		if not FlyBV then
 			FlyBV = new('BodyVelocity', {
 				Name = 'StabDontDelete',
@@ -69,32 +64,26 @@ function TweenModule:TweenTo(Config)
 				Parent = HRP
 			})
 		end
-		
-		if not NoclipConnection then
-			NoclipParts = {}
-			for _, part in ipairs(Char:GetDescendants()) do
-				if part:IsA('BasePart') and part.CanCollide and (part.Parent == Char or part:FindFirstAncestorOfClass('Accessory')) then
-					part.CanCollide = false
-					table.insert(NoclipParts, part)
-				end
-			end
-			NoclipConnection = RunService.Stepped:Connect(function()
-				if not Char then return end
-				for _, part in ipairs(Char:GetDescendants()) do
-					if part:IsA('BasePart') and part.CanCollide and (part.Parent == Char or part:FindFirstAncestorOfClass('Accessory')) then
-						part.CanCollide = false
-						table.insert(NoclipParts, part)
-					end
-				end
-			end)
-		end
-		
-		CurrentTween = TS:Create(HRP, info, goal)
 		CurrentTween:Play()
-		
-		CurrentTween.Completed:Connect(function(state)
-			if CurrentTween and TweenId == MyId and state == Enum.PlaybackState.Completed then
-				TweenModule:CancelTween()
+		if TorsoPart then
+			TorsoPart.CanCollide = false
+		end
+		CurrentTween.Completed:Connect(function()
+			CurrentTween = nil
+			if FlyBV then
+				FlyBV:Destroy()
+				FlyBV = nil
+			elseif HRP:FindFirstChild('StabDontDelete') then
+				HRP.StabDontDelete:Destroy()
+			end
+			if CurrentTween then
+				CurrentTween:Cancel()
+				CurrentTween = nil
+			end
+			if TorsoPart then
+				if TorsoPart.CanCollide == false then
+					TorsoPart.CanCollide = true
+				end
 			end
 		end)
 	end
@@ -106,29 +95,20 @@ function TweenModule:GetActiveTween()
 end
 
 function TweenModule:CancelTween()
-	TweenId = TweenId + 1
-	
-	if NoclipConnection then
-		NoclipConnection:Disconnect()
-		NoclipConnection = nil
-	end
-	for _, part in ipairs(NoclipParts) do
-		if part and part.Parent then part.CanCollide = true end
-	end
-	NoclipParts = {}
-	
 	if FlyBV then
 		FlyBV:Destroy()
 		FlyBV = nil
-	end
-	if HRP and HRP:FindFirstChild('StabDontDelete') then
+	elseif HRP and HRP:FindFirstChild('StabDontDelete') then
 		HRP.StabDontDelete:Destroy()
 	end
-	
 	if CurrentTween then
-		local t = CurrentTween
+		CurrentTween:Cancel()
 		CurrentTween = nil
-		t:Cancel()
+	end
+	if TorsoPart then
+		if TorsoPart.CanCollide == false then
+			TorsoPart.CanCollide = true
+		end
 	end
 end
 
