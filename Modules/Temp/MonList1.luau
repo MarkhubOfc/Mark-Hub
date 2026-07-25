@@ -103,7 +103,7 @@ function Module:Check()
       QPos = CFrame.new(-4841, 718, -2622),
       CPos = CFrame.new(-4956, 296, -2901)
     }
-  elseif MyLevel >= 175 then
+  elseif MyLevel >= 175 and MyLevel <= 189 then
     return {
       MonName = 'Dark Master',
       QName = 'SkyQuest',
@@ -111,6 +111,24 @@ function Module:Check()
       QTitle = 'Defeat 8 Dark Masters',
       QPos = CFrame.new(-4841, 718, -2622),
       CPos = CFrame.new(-5224, 430, -2279)
+    }
+  elseif MyLevel >= 190 and MyLevel <= 209 then
+    return {
+      MonName = 'Prisoner',
+      QName = 'PrisonerQuest',
+      QLevel = 1,
+      QTitle = 'Defeat 8 Prisoners',
+      QPos = CFrame.new(5306, 2, 474),
+      CPos = CFrame.new(5044, 2, 514)
+    }
+  elseif MyLevel >= 210 then
+    return {
+      MonName = 'Dangerous Prisoner',
+      QName = 'PrisonerQuest',
+      QLevel = 2,
+      QTitle = 'Defeat 8 Dangerous Prisoners',
+      QPos = CFrame.new(5306, 2, 474),
+      CPos = CFrame.new(5596, 2, 610)
     }
   end
 end
