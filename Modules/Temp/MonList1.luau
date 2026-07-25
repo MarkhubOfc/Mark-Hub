@@ -121,7 +121,7 @@ function Module:Check()
       QPos = CFrame.new(5306, 2, 474),
       CPos = CFrame.new(5044, 2, 514)
     }
-  elseif MyLevel >= 210 then
+  elseif MyLevel >= 210 and MyLevel <= 249 then
     return {
       MonName = 'Dangerous Prisoner',
       QName = 'PrisonerQuest',
@@ -130,7 +130,36 @@ function Module:Check()
       QPos = CFrame.new(5306, 2, 474),
       CPos = CFrame.new(5596, 2, 610)
     }
+  elseif MyLevel >= 250 and MyLevel <= 274 then
+    return {
+      MonName = 'Toga Warrior',
+      QName = 'ColosseumQuest',
+      QLevel = 1,
+      QTitle = 'Defeat 7 Toga Warriors',
+      QPos = CFrame.new(-1577.35046, 7.43121386, -2984.27515, 0.681490481, 2.8824866e-08, 0.731826961, 3.14892254e-08, 1, -6.87108823e-08, -0.731826961, 6.98704739e-08, 0.681490481),
+      CPos = CFrame.new(-1786.38354, 41.178318, -2740.29297, 0.999907076, 8.20518622e-08, -0.0136341415, -8.12765464e-08, 1, 5.74200421e-08, 0.0136341415, -5.63065683e-08, 0.999907076)
+    }
+  elseif MyLevel >= 250 then
+    return {
+      MonName = 'Gladiator',
+      QName = 'ColosseumQuest',
+      QLevel = 2,
+      QTitle = 'Defeat 7 Gladiators',
+      QPos = CFrame.new(-1577.35046, 7.43121386, -2984.27515, 0.681490481, 2.8824866e-08, 0.731826961, 3.14892254e-08, 1, -6.87108823e-08, -0.731826961, 6.98704739e-08, 0.681490481),
+      CPos = CFrame.new(-1385.80981, 7.48420763, -3279.99927, 0.24238883, 3.88813177e-08, 0.9701792, 4.34417693e-08, 1, -5.09298843e-08, -0.9701792, 5.44911352e-08, 0.24238883)
+    }
   end
 end
+
+local Model = {
+    {
+      MonName = '', -- Target name
+      QName = '', -- Quest name
+      QLevel = 1, -- Quest level
+      QTitle = 'Defeat ', -- Quest title
+      QPos = CFrame.new(), -- Quest cframe
+      CPos = CFrame.new() -- No mon cframe
+    }
+}
 
 return Module
