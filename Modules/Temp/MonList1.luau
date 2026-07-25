@@ -105,7 +105,7 @@ function Module:Check()
     }
   elseif MyLevel >= 175 then
     return {
-      MonName = 'Dark Masters',
+      MonName = 'Dark Master',
       QName = 'SkyQuest',
       QLevel = 2,
       QTitle = 'Defeat 8 Dark Masters',
