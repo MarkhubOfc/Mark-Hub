@@ -85,7 +85,7 @@ function Module:Check()
       QPos = CFrame.new(1384, 87, -1294),
       CPos = CFrame.new(1158, 107, -1503)
     }
-  elseif MyLevel >= 120 then
+  elseif MyLevel >= 120 and MyLevel <= 149 then
     return {
       MonName = 'Chief Petty Officer',
       QName = 'MarineQuest2',
@@ -93,6 +93,24 @@ function Module:Check()
       QTitle = 'Defeat 8 Chief Petty Officers',
       QPos = CFrame.new(-5036, 29, 4325),
       CPos = CFrame.new(-4922, 21, 3997)
+    }
+  elseif MyLevel >= 150 and MyLevel <= 174 then
+    return {
+      MonName = 'Sky Bandit',
+      QName = 'SkyQuest',
+      QLevel = 1,
+      QTitle = 'Defeat 7 Sky Bandits',
+      QPos = CFrame.new(-4841, 718, -2622),
+      CPos = CFrame.new(-4956, 296, -2901)
+    }
+  elseif MyLevel >= 175 then
+    return {
+      MonName = 'Dark Masters',
+      QName = 'SkyQuest',
+      QLevel = 2,
+      QTitle = 'Defeat 8 Dark Masters',
+      QPos = CFrame.new(-4841, 718, -2622),
+      CPos = CFrame.new(-5224, 430, -2279)
     }
   end
 end
