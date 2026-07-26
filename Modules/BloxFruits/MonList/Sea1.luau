@@ -6,6 +6,11 @@ function Module:Check()
 
   if MyLevel >= 0 and MyLevel <= 9 then
     return {
+      Special = false,
+      SpecialConfig = {
+        Event = '',
+        BrickId = 0
+      },
       MonName = 'Bandit',
       QName = 'BanditQuest1',
       QLevel = 1,
@@ -15,6 +20,11 @@ function Module:Check()
     }
   elseif MyLevel >= 10 and MyLevel <= 14 then
     return {
+      Special = false,
+      SpecialConfig = {
+        Event = '',
+        BrickId = 0
+      },
       MonName = 'Monkey',
       QName = 'JungleQuest',
       QLevel = 1,
@@ -24,6 +34,11 @@ function Module:Check()
     }
   elseif MyLevel >= 15 and MyLevel <= 29 then
     return {
+      Special = false,
+      SpecialConfig = {
+        Event = '',
+        BrickId = 0
+      },
       MonName = 'Gorilla',
       QName = 'JungleQuest',
       QLevel = 2,
@@ -33,6 +48,11 @@ function Module:Check()
     }
   elseif MyLevel >= 30 and MyLevel <= 39 then
     return {
+      Special = false,
+      SpecialConfig = {
+        Event = '',
+        BrickId = 0
+      },
       MonName = 'Pirate',
       QName = 'BuggyQuest1',
       QLevel = 1,
@@ -42,6 +62,11 @@ function Module:Check()
     }
   elseif MyLevel >= 40 and MyLevel <= 59 then
     return {
+      Special = false,
+      SpecialConfig = {
+        Event = '',
+        BrickId = 0
+      },
       MonName = 'Brute',
       QName = 'BuggyQuest1',
       QLevel = 2,
@@ -51,6 +76,11 @@ function Module:Check()
     }
   elseif MyLevel >= 60 and MyLevel <= 74 then
     return {
+      Special = false,
+      SpecialConfig = {
+        Event = '',
+        BrickId = 0
+      },
       MonName = 'Desert Bandit',
       QName = 'DesertQuest',
       QLevel = 1,
@@ -60,6 +90,11 @@ function Module:Check()
     }
   elseif MyLevel >= 75 and MyLevel <= 89 then
     return {
+      Special = false,
+      SpecialConfig = {
+        Event = '',
+        BrickId = 0
+      },
       MonName = 'Desert Officer',
       QName = 'DesertQuest',
       QLevel = 2,
@@ -69,6 +104,11 @@ function Module:Check()
     }
   elseif MyLevel >= 90 and MyLevel <= 99 then
     return {
+      Special = false,
+      SpecialConfig = {
+        Event = '',
+        BrickId = 0
+      },
       MonName = 'Snow Bandit',
       QName = 'SnowQuest',
       QLevel = 1,
@@ -78,6 +118,11 @@ function Module:Check()
     }
   elseif MyLevel >= 100 and MyLevel <= 119 then
     return {
+      Special = false,
+      SpecialConfig = {
+        Event = '',
+        BrickId = 0
+      },
       MonName = 'Snowman',
       QName = 'SnowQuest',
       QLevel = 2,
@@ -87,6 +132,11 @@ function Module:Check()
     }
   elseif MyLevel >= 120 and MyLevel <= 149 then
     return {
+      Special = false,
+      SpecialConfig = {
+        Event = '',
+        BrickId = 0
+      },
       MonName = 'Chief Petty Officer',
       QName = 'MarineQuest2',
       QLevel = 1,
@@ -96,6 +146,11 @@ function Module:Check()
     }
   elseif MyLevel >= 150 and MyLevel <= 174 then
     return {
+      Special = false,
+      SpecialConfig = {
+        Event = '',
+        BrickId = 0
+      },
       MonName = 'Sky Bandit',
       QName = 'SkyQuest',
       QLevel = 1,
@@ -105,6 +160,11 @@ function Module:Check()
     }
   elseif MyLevel >= 175 and MyLevel <= 189 then
     return {
+      Special = false,
+      SpecialConfig = {
+        Event = '',
+        BrickId = 0
+      },
       MonName = 'Dark Master',
       QName = 'SkyQuest',
       QLevel = 2,
@@ -114,6 +174,11 @@ function Module:Check()
     }
   elseif MyLevel >= 190 and MyLevel <= 209 then
     return {
+      Special = false,
+      SpecialConfig = {
+        Event = '',
+        BrickId = 0
+      },
       MonName = 'Prisoner',
       QName = 'PrisonerQuest',
       QLevel = 1,
@@ -123,6 +188,11 @@ function Module:Check()
     }
   elseif MyLevel >= 210 and MyLevel <= 249 then
     return {
+      Special = false,
+      SpecialConfig = {
+        Event = '',
+        BrickId = 0
+      },
       MonName = 'Dangerous Prisoner',
       QName = 'PrisonerQuest',
       QLevel = 2,
@@ -132,6 +202,11 @@ function Module:Check()
     }
   elseif MyLevel >= 250 and MyLevel <= 274 then
     return {
+      Special = false,
+      SpecialConfig = {
+        Event = '',
+        BrickId = 0
+      },
       MonName = 'Toga Warrior',
       QName = 'ColosseumQuest',
       QLevel = 1,
@@ -141,6 +216,11 @@ function Module:Check()
     }
   elseif MyLevel >= 275 then
     return {
+      Special = false,
+      SpecialConfig = {
+        Event = '',
+        BrickId = 0
+      },
       MonName = 'Gladiator',
       QName = 'ColosseumQuest',
       QLevel = 2,
@@ -155,7 +235,7 @@ local Model = {
     {
       Special = false,
       SpecialConfig = {
-        Event = {},
+        Event = '',
         BrickId = 0
       },
       MonName = '', -- Target name
