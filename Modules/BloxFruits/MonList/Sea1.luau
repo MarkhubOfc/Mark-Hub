@@ -144,7 +144,7 @@ function Module:Check()
       MonName = 'Gladiator',
       QName = 'ColosseumQuest',
       QLevel = 2,
-      QTitle = 'Defeat 7 Gladiators',
+      QTitle = 'Defeat 8 Gladiators',
       QPos = CFrame.new(-1577.35046, 7.43121386, -2984.27515, 0.681490481, 2.8824866e-08, 0.731826961, 3.14892254e-08, 1, -6.87108823e-08, -0.731826961, 6.98704739e-08, 0.681490481),
       CPos = CFrame.new(-1385.80981, 7.48420763, -3279.99927, 0.24238883, 3.88813177e-08, 0.9701792, 4.34417693e-08, 1, -5.09298843e-08, -0.9701792, 5.44911352e-08, 0.24238883)
     }
@@ -153,12 +153,17 @@ end
 
 local Model = {
     {
-      MonName = '', -- Target name <String>
-      QName = '', -- Quest name <String>
-      QLevel = 1, -- Quest level <Number>
-      QTitle = 'Defeat ', -- Quest title <String>
-      QPos = CFrame.new(0, 0, 0), -- Quest cframe <CFrame>
-      CPos = CFrame.new(0, 0, 0) -- No mon cframe <CFrame>
+      Special = false,
+      SpecialConfig = {
+        Event = '',
+        BrickId = 0
+      },
+      MonName = '', -- Target name
+      QName = '', -- Quest name
+      QLevel = 1, -- Quest level
+      QTitle = 'Defeat ', -- Quest title
+      QPos = CFrame.new(0, 0, 0), -- Quest cframe
+      CPos = CFrame.new(0, 0, 0) -- No mon cframe
     }
 }
 
