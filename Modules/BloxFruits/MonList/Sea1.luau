@@ -155,7 +155,7 @@ local Model = {
     {
       Special = false,
       SpecialConfig = {
-        Event = '',
+        Event = {},
         BrickId = 0
       },
       MonName = '', -- Target name
