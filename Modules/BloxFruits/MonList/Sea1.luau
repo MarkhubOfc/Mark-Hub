@@ -155,7 +155,7 @@ local Model = {
     {
       MonName = '', -- Target name <String>
       QName = '', -- Quest name <String>
-      QLevel = , -- Quest level <Number>
+      QLevel = 1, -- Quest level <Number>
       QTitle = 'Defeat ', -- Quest title <String>
       QPos = CFrame.new(0, 0, 0), -- Quest cframe <CFrame>
       CPos = CFrame.new(0, 0, 0) -- No mon cframe <CFrame>
