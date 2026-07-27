@@ -3,7 +3,8 @@ local Module = {}
 function Module:Check()
   local plr = (cloneref and cloneref(game:GetService('Players')) or game:GetService('Players'))
   local WS = (cloneref and cloneref(game:GetService('Workspace')) or game:GetService('Workapace')),
-  
+
+  -- Local player Data
   local MyLevel = plr.LocalPlayer:WaitForChild('Data'):WaitForChild('Level').Value
 
   if MyLevel >= 0 and MyLevel <= 9 then
