@@ -6,7 +6,6 @@ function Module:Check()
 
   -- Local player Data
   local MyLevel = plr.LocalPlayer:WaitForChild('Data'):WaitForChild('Level').Value
-
   if MyLevel >= 0 and MyLevel <= 9 then
     return {
       Special = false,
