@@ -275,4 +275,4 @@ local Model = {
     }
 }
 
-return Módulo 
+return Module
