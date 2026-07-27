@@ -1,6 +1,8 @@
 # Zynkore Hub
 * Open source and keylles
 * Sou brasileiro
+  
+* Aguardando carregar 👍👍👍👍
 
 ## Loader ( Main )
 ```lua
