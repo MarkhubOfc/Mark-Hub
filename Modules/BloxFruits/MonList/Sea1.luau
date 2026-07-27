@@ -2,14 +2,16 @@ local Module = {}
 
 function Module:Check()
   local plr = (cloneref and cloneref(game:GetService('Players')) or game:GetService('Players'))
+  local WS = (cloneref and cloneref(game:GetService('Workspace')) or game:GetService('Workapace')),
+  
   local MyLevel = plr.LocalPlayer:WaitForChild('Data'):WaitForChild('Level').Value
 
   if MyLevel >= 0 and MyLevel <= 9 then
     return {
       Special = false,
       SpecialConfig = {
-        Event = '',
-        BrickId = 0
+        Event = WS,
+        EventId = 0
       },
       MonName = 'Bandit',
       QName = 'BanditQuest1',
@@ -22,8 +24,8 @@ function Module:Check()
     return {
       Special = false,
       SpecialConfig = {
-        Event = '',
-        BrickId = 0
+        Event = WS,
+        EventId = 0
       },
       MonName = 'Monkey',
       QName = 'JungleQuest',
@@ -36,8 +38,8 @@ function Module:Check()
     return {
       Special = false,
       SpecialConfig = {
-        Event = '',
-        BrickId = 0
+        Event = WS,
+        EventId = 0
       },
       MonName = 'Gorilla',
       QName = 'JungleQuest',
@@ -50,8 +52,8 @@ function Module:Check()
     return {
       Special = false,
       SpecialConfig = {
-        Event = '',
-        BrickId = 0
+        Event = WS,
+        EventId = 0
       },
       MonName = 'Pirate',
       QName = 'BuggyQuest1',
@@ -64,8 +66,8 @@ function Module:Check()
     return {
       Special = false,
       SpecialConfig = {
-        Event = '',
-        BrickId = 0
+        Event = WS,
+        EventId = 0
       },
       MonName = 'Brute',
       QName = 'BuggyQuest1',
@@ -78,8 +80,8 @@ function Module:Check()
     return {
       Special = false,
       SpecialConfig = {
-        Event = '',
-        BrickId = 0
+        Event = WS,
+        EventId = 0
       },
       MonName = 'Desert Bandit',
       QName = 'DesertQuest',
@@ -92,8 +94,8 @@ function Module:Check()
     return {
       Special = false,
       SpecialConfig = {
-        Event = '',
-        BrickId = 0
+        Event = WS,
+        EventId = 0
       },
       MonName = 'Desert Officer',
       QName = 'DesertQuest',
@@ -106,8 +108,8 @@ function Module:Check()
     return {
       Special = false,
       SpecialConfig = {
-        Event = '',
-        BrickId = 0
+        Event = WS,
+        EventId = 0
       },
       MonName = 'Snow Bandit',
       QName = 'SnowQuest',
@@ -120,8 +122,8 @@ function Module:Check()
     return {
       Special = false,
       SpecialConfig = {
-        Event = '',
-        BrickId = 0
+        Event = WS,
+        EventId = 0
       },
       MonName = 'Snowman',
       QName = 'SnowQuest',
@@ -134,8 +136,8 @@ function Module:Check()
     return {
       Special = false,
       SpecialConfig = {
-        Event = '',
-        BrickId = 0
+        Event = WS,
+        EventId = 0
       },
       MonName = 'Chief Petty Officer',
       QName = 'MarineQuest2',
@@ -148,8 +150,8 @@ function Module:Check()
     return {
       Special = false,
       SpecialConfig = {
-        Event = '',
-        BrickId = 0
+        Event = WS,
+        EventId = 0
       },
       MonName = 'Sky Bandit',
       QName = 'SkyQuest',
@@ -162,8 +164,8 @@ function Module:Check()
     return {
       Special = false,
       SpecialConfig = {
-        Event = '',
-        BrickId = 0
+        Event = WS,
+        EventId = 0
       },
       MonName = 'Dark Master',
       QName = 'SkyQuest',
@@ -176,8 +178,8 @@ function Module:Check()
     return {
       Special = false,
       SpecialConfig = {
-        Event = '',
-        BrickId = 0
+        Event = WS,
+        EventId = 0
       },
       MonName = 'Prisoner',
       QName = 'PrisonerQuest',
@@ -190,8 +192,8 @@ function Module:Check()
     return {
       Special = false,
       SpecialConfig = {
-        Event = '',
-        BrickId = 0
+        Event = WS,
+        EventId = 0
       },
       MonName = 'Dangerous Prisoner',
       QName = 'PrisonerQuest',
@@ -204,8 +206,8 @@ function Module:Check()
     return {
       Special = false,
       SpecialConfig = {
-        Event = '',
-        BrickId = 0
+        Event = WS,
+        EventId = 0
       },
       MonName = 'Toga Warrior',
       QName = 'ColosseumQuest',
@@ -218,8 +220,8 @@ function Module:Check()
     return {
       Special = false,
       SpecialConfig = {
-        Event = '',
-        BrickId = 0
+        Event = WS,
+        EventId = 0
       },
       MonName = 'Gladiator',
       QName = 'ColosseumQuest',
@@ -232,8 +234,8 @@ function Module:Check()
     return {
       Special = false,
       SpecialConfig = {
-        Event = '',
-        BrickId = 0
+        Event = WS,
+        EventId = 0
       },
       MonName = 'Military Soldier',
       QName = 'MagmaQuest',
@@ -242,12 +244,12 @@ function Module:Check()
       QPos = CFrame.new(-5316.13721, 12.2790842, 8516.93457, 0.561972737, -1.36195561e-08, -0.827155769, 5.75840744e-08, 1, 2.26573089e-08, 0.827155769, -6.03637886e-08, 0.561972737),
       CPos = CFrame.new(-5402.39111, 23.8708324, 8511.2666, 0.559043229, -2.01662527e-08, -0.829138517, -5.96194738e-08, 1, -6.45201155e-08, 0.829138517, 8.55023359e-08, 0.559043229)
     }
-  elseif MyLevel >= 325 then
+  elseif MyLevel >= 325 and MyLevel <= 374 then
     return {
       Special = false,
       SpecialConfig = {
-        Event = '',
-        BrickId = 0
+        Event = WS,
+        EventId = 0
       },
       MonName = 'Military Spy',
       QName = 'MagmaQuest',
@@ -256,15 +258,29 @@ function Module:Check()
       QPos = CFrame.new(-5316.13721, 12.2790842, 8516.93457, 0.561972737, -1.36195561e-08, -0.827155769, 5.75840744e-08, 1, 2.26573089e-08, 0.827155769, -6.03637886e-08, 0.561972737),
       CPos = CFrame.new(-5798.00635, 97.9792938, 8805.15137, -0.162153482, -1.86368414e-08, 0.986765563, 6.42401021e-09, 1, 1.99424441e-08, -0.986765563, 9.57272928e-09, -0.162153482)
     }
+  elseif MyLevel >= 375 then
+    return {
+      Special = true,
+      SpecialConfig = {
+        Event = WS:WaitForChild('Map'):WaitForChild('TeleportSpawn'):WaitForChild('Entrance'),
+        EventId = 1
+      },
+      MonName = 'Fishman Warrior',
+      QName = 'FishmanQuest',
+      QLevel = 1,
+      QTitle = 'Defeat 8 Fishman Warriors',
+      QPos = CFrame.new(61122.4844, 18.5134315, 1569.41138, 0.965646863, -5.98844423e-08, 0.259857982, 3.17008322e-08, 1, 1.12648593e-07, -0.259857982, -1.00541044e-07, 0.965646863),
+      CPos = CFrame.new(60943.7188, 48.7146912, 1552.30688, -0.995199919, 9.07342752e-08, 0.0978628993, 9.07112465e-08, 1, -4.68461536e-09, -0.0978628993, 4.21513668e-09, -0.995199919)
+    }
   end
 end
 
 local Model = {
     {
-      Special = false,
-      SpecialConfig = {
-        Event = '',
-        BrickId = 0
+      Special = false, -- IsSpecialQuest
+      SpecialConfig = { -- Table
+        Event = WS, -- Require: Instance and TouchInterest
+        EventId = 0 -- Event id
       },
       MonName = '', -- Target name
       QName = '', -- Quest name
