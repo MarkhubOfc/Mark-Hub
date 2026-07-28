@@ -228,6 +228,7 @@ function Module:Check()
     }
   elseif MyLevel >= 525 and MyLevel <= 549 then
     return {
+      SpecialId = 2,
       MonName = 'Royal Squad',
       QName = 'SkyExp2Quest',
       QLevel = 1,
@@ -235,8 +236,9 @@ function Module:Check()
       QPos = CFrame.new(-7899.23096, 5636.00586, -1409.35303, 0.049320519, 8.49550386e-09, 0.998782992, -1.42353134e-08, 1, -7.80290765e-09, -0.998782992, -1.38331462e-08, 0.049320519),
       CPos = CFrame.new(-7630.89453, 5637.12256, -1434.58813, 0.984364808, 4.25763673e-08, 0.176141918, -3.91642239e-08, 1, -2.284796e-08, -0.176141918, 1.55922653e-08, 0.984364808)
     }
-  elseif MyLevel >= 550 then
+  elseif MyLevel >= 550 and MyLevel <= 624 then
     return {
+      SpecialId = 2,
       MonName = 'Royal Soldier',
       QName = 'SkyExp2Quest',
       QLevel = 2,
@@ -244,19 +246,27 @@ function Module:Check()
       QPos = CFrame.new(-7899.23096, 5636.00586, -1409.35303, 0.049320519, 8.49550386e-09, 0.998782992, -1.42353134e-08, 1, -7.80290765e-09, -0.998782992, -1.38331462e-08, 0.049320519),
       CPos = CFrame.new(-7854.87012, 5668.83496, -1711.14807, 0.208919182, -2.84287829e-08, -0.97793293, -5.15764587e-09, 1, -3.01721244e-08, 0.97793293, 1.13473675e-08, 0.208919182)
     }
+  elseif MyLevel >= 625 and MyLevel <= 649 then
+    return {
+      SpecialId = 0,
+      MonName = 'Galley Pirate',
+      QName = 'FountainQuest',
+      QLevel = 1,
+      QTitle = 'Defeat 8 Galley Pirates',
+      QPos = CFrame.new(5255.34277, 38.5427055, 4049.66772, -0.103320785, 3.05353609e-08, -0.994648099, -7.32516412e-08, 1, 3.83088015e-08, 0.994648099, 7.68176989e-08, -0.103320785),
+      CPos = CFrame.new(5549.6709, 78.942688, 3922.48975, -0.981268167, 6.97369771e-08, 0.192646772, 6.6924855e-08, 1, -2.11046594e-08, -0.192646772, -7.8164728e-09, -0.981268167)
+    }
+  elseif MyLevel >= 650 then
+    return {
+      SpecialId = 0,
+      MonName = 'Galley Captain',
+      QName = 'FountainQuest',
+      QLevel = 2,
+      QTitle = 'Defeat 8 Galley Captains',
+      QPos = CFrame.new(5255.34277, 38.5427055, 4049.66772, -0.103320785, 3.05353609e-08, -0.994648099, -7.32516412e-08, 1, 3.83088015e-08, 0.994648099, 7.68176989e-08, -0.103320785),
+      CPos = CFrame.new(5413.87744, 82.4888306, 4951.49463, 0.997490644, -6.21331764e-10, 0.0707988068, 5.97801864e-10, 1, 3.53537616e-10, -0.0707988068, -3.10326792e-10, 0.997490644)
+    }
   end
 end
-
-local Model = {
-    {
-      SpecialId = 0, -- Id, 0 = not special
-      MonName = '', -- Target name
-      QName = '', -- Quest name
-      QLevel = 1, -- Quest level
-      QTitle = 'Defeat ', -- Quest title
-      QPos = CFrame.new(0, 0, 0), -- Quest cframe
-      CPos = CFrame.new(0, 0, 0) -- No mon cframe
-    }
-}
 
 return Module
