@@ -4,7 +4,7 @@ function Module:Check()
   local plr = (cloneref and cloneref(game:GetService('Players')) or game:GetService('Players'))
   local WS = (cloneref and cloneref(game:GetService('Workspace')) or game:GetService('Workspace'))
   
-  -- Local player Data
+  -- LocalPlayer Data
   local MyLevel = plr.LocalPlayer:WaitForChild('Data'):WaitForChild('Level').Value
   if MyLevel >= 0 and MyLevel <= 9 then
     return {
@@ -216,7 +216,7 @@ function Module:Check()
       QPos = CFrame.new(-4721.9917, 845.318542, -1954.87976, -0.999318779, 1.9976083e-08, -0.0369044468, 1.56465472e-08, 1, 1.17606234e-07, 0.0369044468, 1.16948691e-07, -0.999318779),
       CPos = CFrame.new(-4718.56201, 852.011902, -1930.24744, -0.938789725, 1.51794044e-08, -0.344490677, 1.44443719e-08, 1, 4.70020378e-09, 0.344490677, -5.63448399e-10, -0.938789725)
     }
-  elseif MyLevel >= 475 then
+  elseif MyLevel >= 475 and MyLevel <= 524 then
     return {
       SpecialId = 2,
       MonName = 'Shanda',
@@ -225,6 +225,24 @@ function Module:Check()
       QTitle = 'Defeat 9 Shandas',
       QPos = CFrame.new(-7863.89453, 5545.53369, -379.44751, 0.433446199, 5.14173237e-08, -0.901179433, 3.27134124e-08, 1, 7.27899732e-08, 0.901179433, -6.10311872e-08, 0.433446199),
       CPos = CFrame.new(-7694.14014, 5610.94287, -447.419983, 0.876786649, 7.18274862e-08, -0.480879635, -7.01012581e-08, 1, 2.15514309e-08, 0.480879635, 1.48142583e-08, 0.876786649)
+    }
+  elseif MyLevel >= 525 and MyLevel <= 549 then
+    return {
+      MonName = 'Royal Squad',
+      QName = 'SkyExp2Quest',
+      QLevel = 1,
+      QTitle = 'Defeat 8 Royal Squads',
+      QPos = CFrame.new(-7899.23096, 5636.00586, -1409.35303, 0.049320519, 8.49550386e-09, 0.998782992, -1.42353134e-08, 1, -7.80290765e-09, -0.998782992, -1.38331462e-08, 0.049320519),
+      CPos = CFrame.new(-7630.89453, 5637.12256, -1434.58813, 0.984364808, 4.25763673e-08, 0.176141918, -3.91642239e-08, 1, -2.284796e-08, -0.176141918, 1.55922653e-08, 0.984364808)
+    }
+  elseif MyLevel >= 550 then
+    return {
+      MonName = 'Royal Soldier',
+      QName = 'SkyExp2Quest',
+      QLevel = 2,
+      QTitle = 'Defeat 8 Royal Soldiers',
+      QPos = CFrame.new(-7899.23096, 5636.00586, -1409.35303, 0.049320519, 8.49550386e-09, 0.998782992, -1.42353134e-08, 1, -7.80290765e-09, -0.998782992, -1.38331462e-08, 0.049320519),
+      CPos = CFrame.new(-7854.87012, 5668.83496, -1711.14807, 0.208919182, -2.84287829e-08, -0.97793293, -5.15764587e-09, 1, -3.01721244e-08, 0.97793293, 1.13473675e-08, 0.208919182)
     }
   end
 end
