@@ -3,7 +3,7 @@ local Module = {}
 function Module:Check()
   local plr = (cloneref and cloneref(game:GetService('Players')) or game:GetService('Players'))
   local WS = (cloneref and cloneref(game:GetService('Workspace')) or game:GetService('Workspace'))
-
+  
   -- Local player Data
   local MyLevel = plr.LocalPlayer:WaitForChild('Data'):WaitForChild('Level').Value
   if MyLevel >= 0 and MyLevel <= 9 then
@@ -196,7 +196,7 @@ function Module:Check()
       QPos = CFrame.new(61122.4844, 18.5134315, 1569.41138, 0.965646863, -5.98844423e-08, 0.259857982, 3.17008322e-08, 1, 1.12648593e-07, -0.259857982, -1.00541044e-07, 0.965646863),
       CPos = CFrame.new(60943.7188, 48.7146912, 1552.30688, -0.995199919, 9.07342752e-08, 0.0978628993, 9.07112465e-08, 1, -4.68461536e-09, -0.0978628993, 4.21513668e-09, -0.995199919)
     }
-  elseif MyLevel >= 400 then
+  elseif MyLevel >= 400 and MyLevel <= 449 then
     return {
       SpecialId = 1,
       MonName = 'Fishman Commando',
@@ -205,6 +205,16 @@ function Module:Check()
       QTitle = 'Defeat 7 Fishman Commandos',
       QPos = CFrame.new(61122.4844, 18.5134315, 1569.41138, 0.965646863, -5.98844423e-08, 0.259857982, 3.17008322e-08, 1, 1.12648593e-07, -0.259857982, -1.00541044e-07, 0.965646863),
       CPos = CFrame.new(61868.8906, 75.5137024, 1406.24072, -0.992563665, 2.19734844e-08, 0.121726699, 2.63579469e-08, 1, 3.44086857e-08, -0.121726699, 3.7361275e-08, -0.992563665)
+    }
+  elseif MyLevel >= 450 then
+    return {
+      SpecialId = 0,
+      MonName = "God's Guard",
+      QName = 'SkyExp1Quest',
+      QLevel = 1,
+      QTitle = "Defeat 7 God's Guards",
+      QPos = CFrame.new(-4721.9917, 845.318542, -1954.87976, -0.999318779, 1.9976083e-08, -0.0369044468, 1.56465472e-08, 1, 1.17606234e-07, 0.0369044468, 1.16948691e-07, -0.999318779),
+      CPos = CFrame.new(-4718.56201, 852.011902, -1930.24744, -0.938789725, 1.51794044e-08, -0.344490677, 1.44443719e-08, 1, 4.70020378e-09, 0.344490677, -5.63448399e-10, -0.938789725)
     }
   end
 end
