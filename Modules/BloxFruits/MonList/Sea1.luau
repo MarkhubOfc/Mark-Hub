@@ -262,7 +262,7 @@ function Module:Check()
       MonName = 'Galley Captain',
       QName = 'FountainQuest',
       QLevel = 2,
-      QTitle = 'Defeat 8 Galley Captains',
+      QTitle = 'Defeat 9 Galley Captains',
       QPos = CFrame.new(5255.34277, 38.5427055, 4049.66772, -0.103320785, 3.05353609e-08, -0.994648099, -7.32516412e-08, 1, 3.83088015e-08, 0.994648099, 7.68176989e-08, -0.103320785),
       CPos = CFrame.new(5413.87744, 82.4888306, 4951.49463, 0.997490644, -6.21331764e-10, 0.0707988068, 5.97801864e-10, 1, 3.53537616e-10, -0.0707988068, -3.10326792e-10, 0.997490644)
     }
