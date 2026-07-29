@@ -64,7 +64,7 @@ function TweenModule:TweenTo(Config)
 		CurrentTween.Completed:Connect(function()
 			CurrentTween = nil
 			if HRP:FindFirstChild('StabDontDelete') then
-				HRP:FindFirstChild('StabDontDeleted'):Destroy()
+				HRP:FindFirstChild('StabDontDelete'):Destroy()
 			elseif HRP:FindFirstChild('StabDontDelete') then
 				HRP.StabDontDelete:Destroy()
 			end
