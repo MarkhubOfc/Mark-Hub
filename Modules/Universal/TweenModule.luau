@@ -40,14 +40,9 @@ function TweenModule:SetGameMode(mode)
 	end
 end
 
-function TweenModule:SetNoclip(Value)
-	
-end
-
 function TweenModule:TweenTo(Config)
 	local TweenCframe = Config[1] or Config.CF or Config.CFrame or Config.Pos or Config.Position
 	local TweenSpeed = Config[2] or Config.Speed or Config.S or 250
-	
 	if HRP and TweenCframe then
 		local dist = (TweenCframe.Position - HRP.Position).Magnitude
 		local time = dist / TweenSpeed
@@ -58,7 +53,7 @@ function TweenModule:TweenTo(Config)
 			new('BodyVelocity', {
 				Name = 'StabDontDelete',
 				Velocity = Vector3.zero,
-				MaxForce = Vector3.new(40000, 40000, 40000),
+				MaxForce = Vector3.one * math.huge,
 				Parent = HRP
 			})
 		end
