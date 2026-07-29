@@ -116,6 +116,20 @@ local ListModule = loadstring(game:HttpGet('https://raw.githubusercontent.com/Zy
 local GeneralModule = loadstring(game:HttpGet('https://raw.githubusercontent.com/Zynkore/Hub/refs/heads/main/Modules/BloxFruits/Module.lua'))()
 TweenModule:SetGameMode({'R15'})
 
+local InfoTab = Window:MakeTab({
+  Title = 'Info',
+  Icon = 'user'
+})
+InfoTab:AddSection('Data')
+
+local MyLevelLabel = InfoTab:AddParagraph(`My level: {MyLevel.Value}`)
+task.spawn(function()
+  while true do
+    MyLevelLabel:SetTitle(`My level: {MyLevel.Value}`)
+    task.wait(5)
+  end
+end)
+
 local MainTab = Window:MakeTab({
   Title = 'Main',
   Icon = 'home'
@@ -125,7 +139,7 @@ Window:SelectTab(1)
 
 local ItemList = {
   ['Melee'] = {
-    "Combat",
+    'Combat',
     "Black Leg",
     "Electro",
     "Fishman Karate",
@@ -497,7 +511,7 @@ local ShopTab = Window:MakeTab({
   Title = 'Shop',
   Icon = 'shoppingcart'
 })
-ShopTab:AddSection('Ability teacher')
+ShopTab:AddSection('Ability Teacher')
 
 ShopTab:AddButton({
   Title = 'Buy Geppo',
@@ -540,6 +554,41 @@ ShopTab:AddButton({
   Callback = function()
     if MyBeli.Value >= 100000 then
       CommF_:InvokeServer('BuyHaki', 'Soru')
+    else
+      Window:Notify({
+        Title = 'Info',
+        Content = "You don't have enough money.",
+        Duration = 3.5
+      })
+    end
+  end
+})
+ShopTab:AddSection('Sword Dealer')
+
+ShopTab:AddButton({
+  Title = 'Buy Katana',
+  Description = 'Cost: 1.000K',
+  Debounce = 0.5,
+  Callback = function()
+    if MyBeli.Value >= 1000 then
+      CommF_:InvokeServer('BuyItem', 'Katana')
+    else
+      Window:Notify({
+        Title = 'Info',
+        Content = "You don't have enough money.",
+        Duration = 3.5
+      })
+    end
+  end
+})
+
+ShopTab:AddButton({
+  Title = 'Buy Cutlass',
+  Description = 'Cost: 1.000K',
+  Debounce = 0.5,
+  Callback = function()
+    if MyBeli.Value >= 1000 then
+      CommF_:InvokeServer('BuyItem', 'Cutlass')
     else
       Window:Notify({
         Title = 'Info',
@@ -950,6 +999,23 @@ SettingsTab:AddToggle({
   Flag = 'Auto_attack',
   Callback = function(V)
     getgenv().Auto_attack = V
+  end
+})
+SettingsTab:AddSection('Team')
+
+SettingsTab:AddButton({
+  Title = 'Switch to team Pirates',
+  Debounce = 0.5,
+  Callback = function()
+    CommF_:InvokeServer('SetTeam2', 'Pirates')
+  end
+})
+
+SettingsTab:AddButton({
+  Title = 'Switch to team Marines',
+  Debounce = 0.5,
+  Callback = function()
+    CommF_:InvokeServer('SetTeam2', 'Marines')
   end
 })
 
