@@ -10,8 +10,6 @@ local TorsoPart = nil
 local Mode = 'R15'
 
 local CurrentTween = nil
-local FlyBV = nil
-
 local function new(c, p)
 	local k = Instance.new(c)
 	for pp, v in pairs(p or {}) do
@@ -56,8 +54,8 @@ function TweenModule:TweenTo(Config)
 		local info = TweenInfo.new(time, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
 		local goal = {CFrame = TweenCframe}
 		CurrentTween = TS:Create(HRP, info, goal)
-		if not FlyBV then
-			FlyBV = new('BodyVelocity', {
+		if not HRP:FindFirstChild('StabDontDelete') then
+			new('BodyVelocity', {
 				Name = 'StabDontDelete',
 				Velocity = Vector3.zero,
 				MaxForce = Vector3.new(40000, 40000, 40000),
@@ -70,9 +68,8 @@ function TweenModule:TweenTo(Config)
 		end
 		CurrentTween.Completed:Connect(function()
 			CurrentTween = nil
-			if FlyBV then
-				FlyBV:Destroy()
-				FlyBV = nil
+			if HRP:FindFirstChild('StabDontDelete') then
+				HRP:FindFirstChild('StabDontDeleted'):Destroy()
 			elseif HRP:FindFirstChild('StabDontDelete') then
 				HRP.StabDontDelete:Destroy()
 			end
@@ -95,6 +92,7 @@ function TweenModule:GetActiveTween()
 end
 
 function TweenModule:CancelTween()
+    local FlyBV = HRP:FindFirstChild('StabDontDeleted')
 	if FlyBV then
 		FlyBV:Destroy()
 		FlyBV = nil
