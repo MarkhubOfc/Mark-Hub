@@ -556,19 +556,21 @@ local TeleportTab = Window:MakeTab({
 })
 TeleportTab:AddSection('Teleport (Map)')
 
-local TeleportTarget = 'Font City'
+local TeleportTarget = 'Pirate Starter'
 TeleportTab:AddDropdown({
   Title = 'Teleport position',
   MultiSelect = false,
   Options = {
-    'Font City',
+    'Fountain City',
     'Prison',
-    'Frozen City',
-    'Selva (Part 1)',
-    'Selva (Part 2)',
-    'Central City'
+    'Frozen Village',
+    'Jungle (Part 1)',
+    'Jungle (Part 2)',
+    'Pirate Starter',
+    'Marine Starter',
+    'Middle Town'
   },
-  Default = 'Font City',
+  Default = 'Pirate Starter',
   Flag = 'TeleportTarget',
   Callback = function(V)
     TeleportTarget = V
@@ -579,7 +581,7 @@ TeleportTab:AddButton({
   Title = 'Teleport to position',
   Debounce = 0.5,
   Callback = function()
-    if TeleportTarget == 'Font City' then
+    if TeleportTarget == 'Fountain City' then
       SetNoclip(false)
       TweenModule:TweenTo({
         CFrame = CFrame.new(5208, 39, 4072),
@@ -591,25 +593,37 @@ TeleportTab:AddButton({
         CFrame = CFrame.new(4876, 65, 735),
         Speed = getgenv().Tween_speed
       })
-    elseif TeleportTarget == 'Frozen City' then
+    elseif TeleportTarget == 'Frozen Village' then
       SetNoclip(false)
       TweenModule:TweenTo({
         CFrame = CFrame.new(1282, 87, -1258),
         Speed = getgenv().Tween_speed
       })
-    elseif TeleportTarget == 'Selva (Part 1)' then
+    elseif TeleportTarget == 'Jungle (Part 1)' then
       SetNoclip(false)
       TweenModule:TweenTo({
         CFrame = CFrame.new(-1446, 48, 54),
         Speed = getgenv().Tween_speed
       })
-    elseif TeleportTarget == 'Selva (Part 2)' then
+    elseif TeleportTarget == 'Jungle (Part 2)' then
       SetNoclip(false)
       TweenModule:TweenTo({
-        CFrame = CFrame.new(-1446, 48, 54),
+        CFrame = CFrame.new(-1181, 13, -317),
         Speed = getgenv().Tween_speed
       })
-    elseif TeleportTarget == 'Central City' then
+    elseif TeleportTarget == 'Pirate Starter' then
+      SetNoclip(false)
+      TweenModule:TweenTo({
+        CFrame = CFrame.new(887, 20, 1488),
+        Speed = getgenv().Tween_speed
+      })
+    elseif TeleportTarget == 'Marine Starter' then
+      SetNoclip(false)
+      TweenModule:TweenTo({
+        CFrame = CFrame.new(-2635, 24, 2099),
+        Speed = getgenv().Tween_speed
+      })
+    elseif TeleportTarget == 'Middle Town' then
       SetNoclip(false)
       TweenModule:TweenTo({
         CFrame = CFrame.new(-808, 59, 1576),
