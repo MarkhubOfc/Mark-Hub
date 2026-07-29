@@ -1,4 +1,4 @@
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/tlredz/Library/refs/heads/main/redz-V5-remake/main.luau"))()
+local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/tlredz/Library/refs/heads/main/redz-V5-remake/main.luau'))()
 
 local Window = Library:MakeWindow({
   Title = 'Zynkore hub : Blox fruits',
@@ -140,18 +140,18 @@ Window:SelectTab(1)
 local ItemList = {
   ['Melee'] = {
     'Combat',
-    "Black Leg",
-    "Electro",
-    "Fishman Karate",
-    "Dragon Claw",
-    "Superhuman",
-    "Death Step",
-    "Sharkman Karate",
-    "Electric Claw",
-    "Dragon Talon",
-    "Godhuman",
-    "Sanguine Art",
-    "Divine Art"
+    'Black Leg',
+    'Electro',
+    'Fishman Karate',
+    'Dragon Claw',
+    'Superhuman',
+    'Death Step',
+    'Sharkman Karate',
+    'Electric Claw',
+    'Dragon Talon',
+    'Godhuman',
+    'Sanguine Art',
+    'Divine Art'
   },
   Type_selected = 'Melee'
 } 
@@ -240,7 +240,7 @@ task.spawn(function()
           break
         end
 
-        local tpPos = typeof(AreaData.TpPos) == "CFrame" and AreaData.TpPos.Position or AreaData.TpPos
+        local tpPos = typeof(AreaData.TpPos) == 'CFrame' and AreaData.TpPos.Position or AreaData.TpPos
         if tpPos and (playerPos - tpPos).Magnitude <= 50 then
           IsInArea = true
           CurrentAreaId = id
@@ -411,8 +411,8 @@ MainTab:AddToggle({
                     end)
                   elseif AreaData.EventType == 3 then
                     pcall(function()
-                      local pos = typeof(AreaData.TpPos) == "CFrame" and AreaData.TpPos.Position or AreaData.TpPos
-                      CommF_:InvokeServer("requestEntrance", pos)
+                      local pos = typeof(AreaData.TpPos) == 'CFrame' and AreaData.TpPos.Position or AreaData.TpPos
+                      CommF_:InvokeServer('requestEntrance', pos)
                     end)
                   end
                 else
