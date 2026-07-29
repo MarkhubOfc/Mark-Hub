@@ -135,7 +135,7 @@ local MainTab = Window:MakeTab({
   Icon = 'home'
 })
 MainTab:AddSection('Farm config')
-Window:SelectTab(1)
+Window:SelectTab(2)
 
 local ItemList = {
   ['Melee'] = {
