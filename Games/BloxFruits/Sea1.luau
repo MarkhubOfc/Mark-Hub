@@ -19,6 +19,7 @@ local WS = (cloneref and cloneref(game:GetService('Workspace')) or game:GetServi
 local ReplicatedFirst = (cloneref and cloneref(game:GetService('ReplicatedFirst')) or game:GetService('ReplicatedFirst'))
 local ReplicatedStorage = (cloneref and cloneref(game:GetService('ReplicatedStorage')) or game:GetService('ReplicatedStorage'))
 local RunService = (cloneref and cloneref(game:GetService('RunService')) or game:GetService('RunService'))
+local BadgeService = (cloneref and cloneref(game:GetService('BadgeService')) or game:GetService('BadgeService'))
 
 -- Global var
 getgenv().InSpecialArea = false
@@ -26,7 +27,7 @@ getgenv().AreaId = 0
 
 getgenv().Farm_distance = 17
 getgenv().Tween_speed = 250
-getgenv().Bring_mobs_dist = 0
+getgenv().Bring_mobs_dist = 350
 getgenv().Bring_mobs = true
 getgenv().Auto_attack = true
 
@@ -245,7 +246,7 @@ function GetNearestMon(MonName)
   for _, Mon in pairs(EnemieFolder:GetChildren()) do
     if Mon.Name == MonName then
       if Mon:IsA('Model') then
-        if Mon:FindFirstChild('Humanoid') and Mon.Humanoid.Health >= 0.00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001 then
+        if Mon:FindFirstChild('Humanoid') and Mon.Humanoid.Health > 0 then
           if Mon:FindFirstChild('HumanoidRootPart') then
             if (Mon.HumanoidRootPart.Position - HRP.Position).Magnitude < MinDist then
               MinDist = (Mon.HumanoidRootPart.Position - HRP.Position).Magnitude
@@ -308,6 +309,31 @@ function BringMon(Mon)
   end
 end
 
+function HaveTool(ToolName)
+  local HaveTool = 'No'
+  if Backpack:FindFirstChild(ToolName) then
+    if Backpack[ToolName]:IsA('Tool') then
+      if Backpack[ToolName].Name == ToolName then
+        HaveTool = 'Yes, un'
+      end
+    end
+  end
+  
+  if Char:FindFirstChild(ToolName) and Char[ToolName]:IsA('Tool') then
+    HaveTool = 'Yes, eq'
+  end
+  return HaveTool
+end
+
+function EquipTool(Instance)
+  Humanoid:EquipTool(Instance)
+end
+
+local HasSea2Badge = false
+if BadgeService:UserHasBadgeAsync(UserId, 2125253106) then
+  HasSea2Badge = true
+end
+
 getgenv().Auto_farm_level = false
 MainTab:AddToggle({
   Title = 'Auto farm level',
@@ -321,15 +347,16 @@ MainTab:AddToggle({
           if not getgenv().Auto_farm_level then break end
           SetNoclip(false)
           if not HRP:FindFirstChild('Stab') then
-            FlyBV = new('BodyVelocity', {
+            new('BodyVelocity', {
               Name = 'Stab',
               Velocity = Vector3.zero,
-              MaxForce = Vector3.new(40000, 40000, 40000),
+              MaxForce = Vector3.one * math.huge,
               Parent = HRP
             })
           end
+          
           local MyQuest = ListModule:Check()
-          if not MyQuest then task.wait(0.1)  end
+          if not MyQuest then task.wait(0.1) continue end
           local SpecialId = MyQuest.SpecialId or 0
           local MonName = MyQuest.MonName
           
@@ -401,20 +428,22 @@ MainTab:AddToggle({
                   if Mon and Mon:FindFirstChild('HumanoidRootPart') and getgenv().Bring_mobs then
                     BringMon(Mon)
                   end
-                  if ItemList.Type_selected then
-                    for Name, Value in pairs(ItemList[ItemList.Type_selected]) do
-                      if Backpack:FindFirstChild(Value) then
-                        Humanoid:EquipTool(Backpack[Value])
-                      elseif Char:FindFirstChild(Value) then
-                        local Tool = Char[Value]
-                        local MonHRP = Mon:FindFirstChild('HumanoidRootPart')
-                        if MonHRP then
-                          if getgenv().Auto_attack then
-                            local Token = GeneralModule:GetToken()
+                  local MonHRP = Mon:FindFirstChild('HumanoidRootPart')
+                  if (MonHRP.Position - HRP.Position).Magnitude <= getgenv().Bring_mobs_dist then
+                    if ItemList.Type_selected then
+                      for Name, Value in pairs(ItemList[ItemList.Type_selected]) do
+                        if HaveTool(Value) == 'Yes, un' then
+                          EquipTool(Backpack[Value])
+                        elseif HaveTool(Value) == 'Yes, eq' then
+                          local Tool = Char[Value]
+                          if MonHRP then
+                            if getgenv().Auto_attack then
+                              local Token = GeneralModule:GetToken()
                               
-                            RE_RegisterAttack:FireServer()
-                            RE_RegisterHit:FireServer(MonHRP, {Mon, MonHRP}, nil, nil, Token)
-                            Tool:Activate()
+                              RE_RegisterAttack:FireServer()
+                              RE_RegisterHit:FireServer(MonHRP, {Mon, MonHRP}, nil, nil, Token)
+                              Tool:Activate()
+                            end
                           end
                         end
                       end
@@ -520,6 +549,235 @@ ShopTab:AddButton({
     end
   end
 })
+
+local TeleportTab = Window:MakeTab({
+  Title = 'Teleport',
+  Icon = 'Map'
+})
+TeleportTab:AddSection('Teleport (Map)')
+
+local TeleportTarget = 'Font City'
+TeleportTab:AddDropdown({
+  Title = 'Teleport position',
+  MultiSelect = false,
+  Options = {
+    'Font City',
+    'Prison',
+    'Frozen City',
+    'Selva (Part 1)',
+    'Selva (Part 2)',
+    'Central City'
+  },
+  Default = 'Font City',
+  Flag = 'TeleportTarget',
+  Callback = function(V)
+    TeleportTarget = V
+  end
+})
+
+TeleportTab:AddButton({
+  Title = 'Teleport to position',
+  Debounce = 0.5,
+  Callback = function()
+    if TeleportTarget == 'Font City' then
+      SetNoclip(false)
+      TweenModule:TweenTo({
+        CFrame = CFrame.new(5208, 39, 4072),
+        Speed = getgenv().Tween_speed
+      })
+    elseif TeleportTarget == 'Prison' then
+      SetNoclip(false)
+      TweenModule:TweenTo({
+        CFrame = CFrame.new(4876, 65, 735),
+        Speed = getgenv().Tween_speed
+      })
+    elseif TeleportTarget == 'Frozen City' then
+      SetNoclip(false)
+      TweenModule:TweenTo({
+        CFrame = CFrame.new(1282, 87, -1258),
+        Speed = getgenv().Tween_speed
+      })
+    elseif TeleportTarget == 'Selva (Part 1)' then
+      SetNoclip(false)
+      TweenModule:TweenTo({
+        CFrame = CFrame.new(-1446, 48, 54),
+        Speed = getgenv().Tween_speed
+      })
+    elseif TeleportTarget == 'Selva (Part 2)' then
+      SetNoclip(false)
+      TweenModule:TweenTo({
+        CFrame = CFrame.new(-1446, 48, 54),
+        Speed = getgenv().Tween_speed
+      })
+    elseif TeleportTarget == 'Central City' then
+      SetNoclip(false)
+      TweenModule:TweenTo({
+        CFrame = CFrame.new(-808, 59, 1576),
+        Speed = getgenv().Tween_speed
+      })
+    end
+  end
+})
+
+TeleportTab:AddButton({
+  Title = 'Cancel any tween',
+  Debounce = 0.5,
+  Callback = function()
+    if TweenModule:GetActiveTween() then
+      TweenModule:CancelTween()
+      if HRP:FindFirstChild('Stab') then HRP.Stab:Destroy() end
+    end
+    if HRP:FindFirstChild('Stab') then HRP.Stab:Destroy() end
+    SetNoclip(true)
+  end
+})
+TeleportTab:AddSection('Teleport (Sea)')
+
+local UpdateLabel1
+if MyLevel.Value < 700 then
+  UpdateLabel1 = TeleportTab:AddParagraph('Please level >= 700', '')
+end
+
+TeleportTab:AddButton({
+  Title = 'Teleport to sea 1',
+  Debounce = 0.5,
+  Callback = function()
+    CommF_:InvokeServer('TravelMain')
+  end
+})
+
+if MyLevel.Value >= 700 then
+  if HasSea2Badge then
+    TeleportTab:AddButton({
+      Title = 'Teleport to sea 2',
+      Debounce = 0.5,
+      Callback = function()
+        CommF_:InvokeServer('TravelDressrosa')
+      end
+    })
+    
+    if MyLevel.Value >= 1500 then
+      TeleportTab:AddButton({
+        Title = 'Teleport to sea 3 (No func)',
+        Debounce = 0.5,
+        Callback = function()
+          
+        end
+      })
+    end
+  else
+    getgenv().Auto_unlock_sea_2 = false
+    TeleportTab:AddToggle({
+      Title = 'Auto unlock sea 2',
+      Description = 'Only if you do not have sea 2 and min level: 700',
+      Default = false,
+      Flag = 'Auto_unlock_sea_2',
+      Callback = function(V)
+        getgenv().Auto_unlock_sea_2 = V
+        if V then
+          SetNoclip(false)
+          while getgenv().Auto_unlock_sea_2 do
+            if not HRP:FindFirstChild('Stab') then
+              new('BodyVelocity', {
+                Name = 'Stab',
+                Velocity = Vector3.zero,
+                MaxForce = Vector3.one * math.huge,
+                Parent = HRP
+              })
+            end
+            
+            if Humanoid.Health > 0 then
+              if HaveTool('Key') == 'Yes, un' then
+                EquipTool(Backpack['Key'])
+              elseif HaveTool('Key') == 'Yes, eq' then
+                TweenModule:TweenTo({
+                  CFrame = CFrame.new(1348.4552, 37.3910789, -1325.38257),
+                  Speed = getgenv().Tween_speed
+                })
+              elseif HaveTool('Key') == 'No' then
+                if MapFolder:FindFirstChild('Ice'):FindFirstChild('Door').CanCollide == true and MapFolder:FindFirstChild('Ice'):FindFirstChild('Door').Transparency == 0 then
+                  if (Vector3.new(4849.2583, 5.69297218, 717.992859) - HRP.Position).Magnitude <= 15 then
+                    CommF_:InvokeServer('DressrosaQuestProgress', 'Detective')
+                  else
+                    TweenModule:TweenTo({
+                      CFrame = CFrame.new(4849.2583, 5.69297218, 717.992859),
+                      Speed = getgenv().Tween_speed
+                    })
+                  end
+                elseif MapFolder:FindFirstChild('Ice'):FindFirstChild('Door').CanCollide == false and MapFolder:FindFirstChild('Ice'):FindFirstChild('Door').Transparency == 1 then
+                  if EnemieFolder:FindFirstChild('Ice Admiral') then
+                    local Mon = EnemieFolder:FindFirstChild('Ice Admiral')
+                    if Mon:FindFirstChild('HumanoidRootPart') then
+                      local MonHRP = Mon:FindFirstChild('HumanoidRootPart')
+                      local MonRotationX, MonRotationY, MonRotationZ = MonHRP.CFrame:ToOrientation()
+                      TweenModule:TweenTo({
+                        CFrame = CFrame.new(MonHRP.CFrame.Position.X, MonHRP.CFrame.Position.Y, MonHRP.CFrame.Position.Z) * CFrame.Angles(0, MonRotationY, 0) + Vector3.new(0, getgenv().Farm_distance, 0),
+                        Speed = getgenv().Tween_speed
+                      })
+                      
+                      if (MonHRP.Position - HRP.Position).Magnitude <= getgenv().Bring_mobs_dist then
+                        if ItemList.Type_selected then
+                          for Name, Value in pairs(ItemList[ItemList.Type_selected]) do
+                            if HaveTool(Value) == 'Yes, un' then
+                              EquipTool(Backpack[Value])
+                            elseif HaveTool(Value) == 'Yes, eq' then
+                              local Tool = Char[Value]
+                              if MonHRP then
+                                if getgenv().Auto_attack then
+                                  local Token = GeneralModule:GetToken()
+                                  
+                                  RE_RegisterAttack:FireServer()
+                                  RE_RegisterHit:FireServer(MonHRP, {Mon, MonHRP}, nil, nil, Token)
+                                  Tool:Activate()
+                                end
+                              end
+                            end
+                          end
+                        end
+                      end
+                    end
+                  else
+                    TweenModule:TweenTo({
+                      CFrame = CFrame.new(1298.56531, 29.6214142, -1337.3407, 0.883535564, 7.3295908e-08, 0.46836406, -5.97956031e-08, 1, -4.36932908e-08, -0.46836406, 1.05984652e-08, 0.883535564),
+                      Speed = getgenv().Tween_speed
+                    })
+                  end
+                end
+              end
+            end
+            task.wait()
+          end
+        else
+          if TweenModule:GetActiveTween() then
+            TweenModule:CancelTween()
+            if HRP:FindFirstChild('Stab') then HRP.Stab:Destroy() end
+          end
+          if HRP:FindFirstChild('Stab') then HRP.Stab:Destroy() end
+          SetNoclip(true)
+        end
+      end
+    })
+  end
+end
+
+task.spawn(function()
+  if MyLevel.Value < 700 then
+    while true do
+      if MyLevel.Value >= 700 then
+        if UpdateLabel1 then
+          Window:Destroy(UpdateLabel1)
+        end
+        return
+      end
+      task.wait(1)
+    end
+  elseif MyLevel.Value >= 1500 then
+    if UpdateLabel1 then
+      Window:Destroy(UpdateLabel1)
+    end
+    return
+  end
+end)
 
 local StatsTab = Window:MakeTab({
   Title = 'Stats',
@@ -647,6 +905,18 @@ SettingsTab:AddSlider({
   Flag = 'Tween_speed',
   Callback = function(V)
     getgenv().Tween_speed = V
+  end
+})
+
+SettingsTab:AddSlider({
+  Title = 'Bring & attack distance',
+  Min = 25,
+  Max = 500,
+  Increment = 1,
+  Default = 350,
+  Flag = 'Bring_mobs_dist',
+  Callback = function(V)
+    getgenv().Bring_mobs_dist = V
   end
 })
 
