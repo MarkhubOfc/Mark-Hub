@@ -275,6 +275,25 @@ function GetNearestMon(MonName)
   return Nearest
 end
 
+function GetNearestMonNoName()
+  local MinDist = math.huge
+  local Nearest = nil
+  for _, Mon in pairs(EnemieFolder:GetChildren()) do
+    if Mon:IsA('Model') and Mon.Name ~= 'Ice Admiral' then
+      if Mon:FindFirstChild('Humanoid') and Mon.Humanoid.Health > 0 then
+        if Mon:FindFirstChild('HumanoidRootPart') then
+          if (Mon:FindFirstChild('HumanoidRootPart').Position - HRP.Position).Magnitude < MinDist then
+            MinDist = (Mon:FindFirstChild('HumanoidRootPart').Position - HRP.Position).Magnitude
+            Nearest = Mon
+          end
+        end
+      end
+    end
+  end
+  
+  return Nearest
+end
+
 function InQuest()
   if QuestGui.Visible == true then
     return true
@@ -439,7 +458,8 @@ MainTab:AddToggle({
                     CFrame = CFrame.new(Mon:FindFirstChild('HumanoidRootPart').CFrame.Position.X, Mon:FindFirstChild('HumanoidRootPart').CFrame.Position.Y, Mon:FindFirstChild('HumanoidRootPart').CFrame.Position.Z) * CFrame.Angles(0, MonRotationY, 0) + Vector3.new(0, getgenv().Farm_distance, 0),
                     Speed = getgenv().Tween_speed
                   })
-                  if Mon and Mon:FindFirstChild('HumanoidRootPart') and getgenv().Bring_mobs then
+                  
+                  if Mon and Mon:FindFirstChild('HumanoidRootPart') and getgenv().Bring_mobs and (MonHRP.Position - HRP.Position).Magnitude <= getgenv().Bring_mobs_dist then
                     BringMon(Mon)
                   end
                   local MonHRP = Mon:FindFirstChild('HumanoidRootPart')
@@ -507,9 +527,94 @@ MainTab:AddToggle({
   end
 })
 
+getgenv().Auto_farm_nearest = false
+MainTab:AddToggle({
+  Title = 'Auto farm nearest',
+  Default = false,
+  Flag = 'Auto_farm_nearest',
+  Callback = function(V)
+    getgenv().Auto_farm_nearest = V
+    if V then
+      task.spawn(function()
+        while getgenv().Auto_farm_nearest do
+          if not getgenv().Auto_farm_nearest then break end
+          local Mon = GetNearestMonNoName()
+          if Mon ~= nil then
+            if Mon:FindFirstChild('HumanoidRootPart') then
+              SetNoclip(false)
+              if not HRP:FindFirstChild('Stab') then
+                new('BodyVelocity', {
+                  Name = 'Stab',
+                  Velocity = Vector3.zero,
+                  MaxForce = Vector3.one * math.huge,
+                  Parent = HRP
+                })
+              end
+              
+              local MonRotationX, MonRotationY, MonRotationZ = Mon:FindFirstChild('HumanoidRootPart').CFrame:ToOrientation()
+              TweenModule:TweenTo({
+                CFrame = CFrame.new(Mon:FindFirstChild('HumanoidRootPart').Position) * CFrame.Angles(0, MonRotationY, 0) + Vector3.new(0, getgenv().Farm_distance, 0),
+                Speed = getgenv().Tween_speed
+              })
+              
+              local MonHRP = Mon:FindFirstChild('HumanoidRootPart')
+              if Mon and Mon:FindFirstChild('HumanoidRootPart') and getgenv().Bring_mobs and (MonHRP.Position - HRP.Position).Magnitude <= getgenv().Bring_mobs_dist then
+                BringMon(Mon)
+              end
+              if (MonHRP.Position - HRP.Position).Magnitude <= getgenv().Bring_mobs_dist then
+                if ItemList.Type_selected then
+                  for Name, Value in pairs(ItemList[ItemList.Type_selected]) do
+                    if HaveTool(Value) == 'Yes, un' then
+                      EquipTool(Backpack[Value])
+                    elseif HaveTool(Value) == 'Yes, eq' then
+                      local Tool = Char[Value]
+                      if MonHRP then
+                        if getgenv().Auto_attack then
+                          local Token = GeneralModule:GetToken()
+                          
+                          RE_RegisterAttack:FireServer()
+                          RE_RegisterHit:FireServer(MonHRP, {Mon, MonHRP}, nil, nil, Token)
+                          Tool:Activate()
+                        end
+                      end
+                    end
+                  end
+                end
+              end
+            end
+          else
+            if HRP:FindFirstChild('Stab') then
+              HRP.Stab:Destroy()
+            end
+            SetNoclip(true)
+          end
+          
+          task.wait()
+        end
+      end)
+    else
+      if TweenModule:GetActiveTween() then
+        TweenModule:CancelTween()
+        if HRP:FindFirstChild('Stab') then HRP.Stab:Destroy() end
+      end
+      if HRP:FindFirstChild('Stab') then HRP.Stab:Destroy() end
+      SetNoclip(true)
+    end
+  end
+})
+
 local ShopTab = Window:MakeTab({
   Title = 'Shop',
   Icon = 'shoppingcart'
+})
+ShopTab:AddSection('Other')
+
+ShopTab:AddButton({
+  Title = 'Buy random fruit',
+  Debounce = 0.5,
+  Callback = function()
+    CommF_:InvokeServer('Cousin', 'DLCBoxData')
+  end
 })
 ShopTab:AddSection('Ability Teacher')
 
