@@ -40,6 +40,14 @@ function TweenModule:SetGameMode(mode)
 	end
 end
 
+function TweenModule:Init()
+    
+end
+
+function TweenModule:Clear()
+    
+end
+
 function TweenModule:TweenTo(Config)
 	local TweenCframe = Config[1] or Config.CF or Config.CFrame or Config.Pos or Config.Position
 	local TweenSpeed = Config[2] or Config.Speed or Config.S or 250
