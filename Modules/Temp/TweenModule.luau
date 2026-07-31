@@ -82,7 +82,7 @@ function Lib:TweenTo(Args)
   if CFrame and Speed then
     if HRP then
       if Humanoid and Humanoid.Health > 0 then
-        local Time = (CFrame.Position - HRP.Position).Magnitude / Speed
+        local Time = ((typeof(CFrame) == 'CFrame' and CFrame.Position or CFrame) - HRP.Position).Magnitude / Speed
         local Info = TweenInfo.new(time, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
         
         CurrentTween = TS:Create(
