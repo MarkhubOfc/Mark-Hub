@@ -3,6 +3,7 @@ local Lib = {}
 -- R6 Module
 local plr = (cloneref and cloneref(game:GetService('Players')) or game:GetService('Players'))
 local TS = (cloneref and cloneref(game:GetService('TweenService')) or game:GetService('TweenService'))
+local RS = (cloneref and cloneref(game:GetService('RunService')) or game:GetService('RunService'))
 
 local LP = plr.LocalPlayer
 local Char = LP.Character or LP.CharacterAdded:Wait()
@@ -28,8 +29,8 @@ function Lib:Init()
   if not HRP:FindFirstChild('Stab') then
     new('BodyVelocity', {
       Name = 'Stab',
-      Velocity = Vector2.zero,
-      MaxForce = Vector2.one * math.huge,
+      Velocity = Vector3.zero,
+      MaxForce = Vector3.one * math.huge,
       Parent = HRP
     })
   end
@@ -64,7 +65,7 @@ function Lib:Noclip(Value)
       end
     end
     
-    NoclipConnection = RunService.Stepped:Connect(function()
+    NoclipConnection = RS.Stepped:Connect(function()
       for _, instance in ipairs(Char:GetDescendants()) do
         if instance:IsA('BasePart') and instance.CanCollide == true then
           instance.CanCollide = false
@@ -93,18 +94,19 @@ function Lib:TweenTo(Args)
             CFrame = (typeof(CFrame) == 'CFrame' and CFrame or CFrame.new(CFrame))
           }
         )
+        CurrentTween:Play()
       end
     end
   end
 end
 
 function Lib:CancelTween()
-  Clear()
+  Lib:Clear()
   if CurrentTween then
     CurrentTween:Cancel()
     CurrentTween = nil
   end
-  Clear()
+  Lib:Clear()
 end
 
 function Lib:GetActiveTween()
