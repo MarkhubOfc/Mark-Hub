@@ -1,4 +1,4 @@
-local GameList
+local GameList = loadstring(game:HttpGet("https://raw.githubusercontent.com/Zynkore/Hub/refs/heads/main/List.luau"))()
 
 local PlaceId = game.PlaceId
 if GameList then
