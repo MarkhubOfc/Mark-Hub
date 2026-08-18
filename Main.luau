@@ -1,11 +1,12 @@
-local success, GameList = pcall(function()
-  return loadstring(game:HttpGet("https://raw.githubusercontent.com/Zynkore/Hub/refs/heads/main/List.luau"))()
-end)
+local GameList
 
-if success and GameList then
-  local currentId = tostring(game.PlaceId)
-  if GameList[currentId] then
-    loadstring(game:HttpGet(GameList[currentId]))()
-    return
+local PlaceId = game.PlaceId
+if GameList then
+  for placeId, url in pairs(GameList) do
+    if placeId and url then
+      if PlaceId == placeId then
+        loadstring(game:HttpGet(url))()
+      end
+    end
   end
 end
