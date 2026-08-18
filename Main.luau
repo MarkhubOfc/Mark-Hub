@@ -5,7 +5,7 @@ if GameList then
   for placeId, url in pairs(GameList) do
     if placeId and url then
       if PlaceId == placeId then
-        loadstring(game:HttpGet("" .. url))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Zynkore/Hub/refs/heads/main/Games/" .. url))()
       end
     end
   end
