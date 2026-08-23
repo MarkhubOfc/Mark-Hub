@@ -101,6 +101,8 @@ if game.PlaceId == 70876832253163 then
   CurrentBond:GetPropertyChangedSignal("Text"):Connect(function()
     CurrentBondLabel.Text = "Current bond(s): " .. tonumber(CurrentBond.Text)
   end)
+  
+  task.wait(1.5)
   task.spawn(function()
     local char = world:get_resource(comps.ClientStateResource).localCharacter
     if char then
