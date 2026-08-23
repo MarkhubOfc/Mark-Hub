@@ -10,7 +10,7 @@ if game.PlaceId == 70876832253163 then
     
   end
   
-  task.wait(1.7)
+  task.wait(2)
   local Prefix = getgenv().Game_config
   local Config = {
     Auto_reset = Prefix.Auto_reset,
@@ -88,6 +88,19 @@ if game.PlaceId == 70876832253163 then
   BondLabel.Font = Enum.Font.GothamBold
   BondLabel.Position = UDim2.new(0, 45, 0, 45)
   BondLabel.BackgroundTransparency = 1
+  
+  local CurrentBond = LP:WaitForChild("PlayerGui"):WaitForChild("BondGui"):WaitForChild("BondInfo"):WaitForChild("BondCount")
+  local CurrentBondLabel = Instance.new("TextLabel", Window)
+  CurrentBondLabel.Name = "Current bond label"
+  CurrentBondLabel.Text = "Current bond(s): ???"
+  CurrentBondLabel.TextColor3 = Color3.fromRGB(0, 170, 255)
+  CurrentBondLabel.TextSize = 16
+  CurrentBondLabel.Font = Enum.Font.GothamBold
+  CurrentBondLabel.Position = UDim2.new(0, 75, 0, 72)
+  CurrentBondLabel.BackgroundTransparency = 1
+  CurrentBond:GetPropertyChangedSignal("Text"):Connect(function()
+    CurrentBondLabel.Text = "Current bond(s): " .. tonumber(CurrentBond.Text)
+  end)
   task.spawn(function()
     local char = world:get_resource(comps.ClientStateResource).localCharacter
     if char then
@@ -112,28 +125,13 @@ if game.PlaceId == 70876832253163 then
         end
       end
     end
+    if Config.Auto_reset == true then
+      LP.Character:WaitForChild("Humanoid").Health = 0
+    end
+    if Config.Auto_teleport == true then
+      TeleportService:Teleport(116495829188952, LP)
+    end
   end)
-
-  local CurrentBond = LP:WaitForChild("PlayerGui"):WaitForChild("BondGui"):WaitForChild("BondInfo"):WaitForChild("BondCount")
-  local CurrentBondLabel = Instance.new("TextLabel", Window)
-  CurrentBondLabel.Name = "Current bond label"
-  CurrentBondLabel.Text = "Current bond(s): ???"
-  CurrentBondLabel.TextColor3 = Color3.fromRGB(0, 170, 255)
-  CurrentBondLabel.TextSize = 16
-  CurrentBondLabel.Font = Enum.Font.GothamBold
-  CurrentBondLabel.Position = UDim2.new(0, 75, 0, 72)
-  CurrentBondLabel.BackgroundTransparency = 1
-  CurrentBond:GetPropertyChangedSignal("Text"):Connect(function()
-    CurrentBondLabel.Text = "Current bond(s): " .. tonumber(CurrentBond.Text)
-  end)
-
-  task.wait(30)
-  if Config.Auto_reset == true then
-    LP.Character:WaitForChild("Humanoid").Health = 0
-  end
-  if Config.Auto_teleport == true then
-    TeleportService:Teleport(116495829188952, LP)
-  end
 elseif game.PlaceId == 116495829188952 then
   if queue_on_teleport then
     queue_on_teleport([[
