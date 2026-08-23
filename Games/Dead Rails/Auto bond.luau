@@ -1,4 +1,14 @@
 if game.PlaceId == 70876832253163 then
+  if queue_on_teleport then
+    queue_on_teleport([[
+      if getgenv().Auto_load == true then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Zynkore/Hub/refs/heads/main/Games/Dead%20Rails/Auto%20bond.luau"))()
+      end
+    ]])
+  else
+    
+  end
+  
   local Prefix = getgenv().Game_config
   local Config = {
     Auto_reset = Prefix.Auto_reset,
@@ -125,6 +135,16 @@ if game.PlaceId == 70876832253163 then
     TeleportService:Teleport(116495829188952, LP)
   end
 elseif game.PlaceId == 116495829188952 then
+  if queue_on_teleport then
+    queue_on_teleport([[
+      if getgenv().Auto_load == true then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Zynkore/Hub/refs/heads/main/Games/Dead%20Rails/Auto%20bond.luau"))()
+      end
+    ]])
+  else
+    
+  end
+  
   local Prefix = getgenv().Lobby_config
   local Config = {
     Players_number = math.clamp(Prefix.Players_number or 1, 1, 10),
