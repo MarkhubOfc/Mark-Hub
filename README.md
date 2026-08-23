@@ -1,7 +1,7 @@
 # Zynkore Hub
 * Open source and keyless
 
-## Loader ( Main )
+## Loader (Main)
 ```luau
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Zynkore/Hub/refs/heads/main/Main.luau"))()
 ```
