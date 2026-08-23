@@ -1,3 +1,4 @@
+repeat task.wait() until game:IsLoaded()
 if game.PlaceId == 70876832253163 then
   if queue_on_teleport then
     queue_on_teleport([[
@@ -125,7 +126,7 @@ if game.PlaceId == 70876832253163 then
     CurrentBondLabel.Text = "Current bond(s): " .. tonumber(CurrentBond.Text)
   end)
 
-  task.wait(30)
+  task.wait(40)
   if Config.Auto_reset == true then
     LP.Character:WaitForChild("Humanoid").Health = 0
   end
