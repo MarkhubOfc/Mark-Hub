@@ -10,6 +10,7 @@ if game.PlaceId == 70876832253163 then
     
   end
   
+  task.wait(2.5)
   local Prefix = getgenv().Game_config
   local Config = {
     Auto_reset = Prefix.Auto_reset,
@@ -126,7 +127,7 @@ if game.PlaceId == 70876832253163 then
     CurrentBondLabel.Text = "Current bond(s): " .. tonumber(CurrentBond.Text)
   end)
 
-  task.wait(40)
+  task.wait(30)
   if Config.Auto_reset == true then
     LP.Character:WaitForChild("Humanoid").Health = 0
   end
@@ -144,6 +145,7 @@ elseif game.PlaceId == 116495829188952 then
     
   end
   
+  task.wait(1.8)
   local Prefix = getgenv().Lobby_config
   local Config = {
     Players_number = math.clamp(Prefix.Players_number or 1, 1, 10),
