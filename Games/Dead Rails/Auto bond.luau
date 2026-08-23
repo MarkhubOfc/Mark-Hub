@@ -127,7 +127,7 @@ if game.PlaceId == 70876832253163 then
         end
       end
       
-      if id >= 999999 then
+      if id >= 99999 then
         if Config.Auto_reset == true then
           LP.Character:WaitForChild("Humanoid").Health = 0
         end
