@@ -11,9 +11,9 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/Zynkore/Hub/refs/head
 
 if game.PlaceId == 70876832253163 then
   local Config = {
-    Auto_reset = getgenv().Auto_bond_config.Auto_reset or true,
-    Auto_teleport = getgenv().Auto_bond_config.Auto_teleport or true,
-    Only_drop_bond = getgenv().Auto_bond_config.Only_drop_bond or false
+    Auto_reset = getgenv().Auto_bond_config.Auto_reset,
+    Auto_teleport = getgenv().Auto_bond_config.Auto_teleport,
+    Only_drop_bond = getgenv().Auto_bond_config.Only_drop_bond
   }
   
   local Player = game:GetService("Players")
