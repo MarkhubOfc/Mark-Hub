@@ -10,7 +10,7 @@ if game.PlaceId == 70876832253163 then
     
   end
   
-  task.wait(2.5)
+  task.wait(2)
   local Prefix = getgenv().Game_config
   local Config = {
     Auto_reset = Prefix.Auto_reset,
