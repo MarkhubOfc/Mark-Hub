@@ -22,7 +22,6 @@ if game.PlaceId == 70876832253163 then
 
   local LP = Player.LocalPlayer
 
-  task.wait(1.5)
   local world = require(RS:WaitForChild("Shared"):WaitForChild("Universe"):WaitForChild("ECS"):WaitForChild("world"))
   local comps = require(RS:WaitForChild("Shared"):WaitForChild("Universe"):WaitForChild("ECS"):WaitForChild("components"))
   local replicator = require(RS:WaitForChild("Client"):WaitForChild("Universe"):WaitForChild("Replication"):WaitForChild("clientReplicator"))
@@ -99,16 +98,14 @@ if game.PlaceId == 70876832253163 then
           local sr = replicator:get_server_entity(id)
           if sr and sr ~= id then
             Remotes.Store:FireServer(sr)
-            task.wait(0.05)
             Remotes.Store:FireServer()
-            task.wait(0.05)
             if Config.Only_drop_bond == false then
               Event:FireServer(sr)
             end
 
             CollectedBond += 1
             BondLabel.Text = "Bond(s): " .. CollectedBond or 0
-            task.wait(0.10)
+            task.wait(0.20)
           end
         end
       end
