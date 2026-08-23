@@ -10,7 +10,7 @@ if game.PlaceId == 70876832253163 then
     
   end
   
-  task.wait(2)
+  task.wait()
   local Prefix = getgenv().Game_config
   local Config = {
     Auto_reset = Prefix.Auto_reset,
@@ -102,7 +102,7 @@ if game.PlaceId == 70876832253163 then
     CurrentBondLabel.Text = "Current bond(s): " .. tonumber(CurrentBond.Text)
   end)
   
-  task.wait(1.5)
+  task.wait(2.8)
   task.spawn(function()
     local char = world:get_resource(comps.ClientStateResource).localCharacter
     if char then
