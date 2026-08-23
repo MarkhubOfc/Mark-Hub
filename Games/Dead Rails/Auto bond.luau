@@ -1,5 +1,27 @@
+--[[
+local Config = {
+  Auto_reset = true,
+  Auto_teleport = true,
+  Only_drop_bond = false
+}
+
+getgenv().Auto_bond_config = Config
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Zynkore/Hub/refs/heads/main/Games/Dead%20Rails/Auto%20bond.luau"))()
+]]
+
 if game.PlaceId == 70876832253163 then
+  local Config = {
+    Auto_reset = getgenv().Auto_bond_config.Auto_reset or true,
+    Auto_teleport = getgenv().Auto_bond_config.Auto_teleport or true,
+    Only_drop_bond = getgenv().Auto_bond_config.Only_drop_bond or false
+  }
+  
+  local Player = game:GetService("Players")
   local RS = game:GetService("ReplicatedStorage")
+  local TeleportService = game:GetService("TeleportService")
+  
+  local LP = Player.LocalPlayer
+  
   local world = require(RS:WaitForChild("Shared"):WaitForChild("Universe"):WaitForChild("ECS"):WaitForChild("world"))
   local comps = require(RS:WaitForChild("Shared"):WaitForChild("Universe"):WaitForChild("ECS"):WaitForChild("components"))
   local replicator = require(RS:WaitForChild("Client"):WaitForChild("Universe"):WaitForChild("Replication"):WaitForChild("clientReplicator"))
@@ -57,8 +79,8 @@ if game.PlaceId == 70876832253163 then
   Line.BorderSizePixel = 0
   
   local BondLabel = Instance.new("TextLabel", Window)
-  BondLabel.Name = "Collected bond(s) label"
-  BondLabel.Text = "Collected bond(s): " .. CollectedBond or 0
+  BondLabel.Name = "Bond(s) label"
+  BondLabel.Text = "Bond(s): " .. CollectedBond or 0
   BondLabel.TextColor3 = Color3.fromRGB(0, 200, 120)
   BondLabel.TextSize = 16
   BondLabel.Font = Enum.Font.GothamBold
@@ -79,10 +101,12 @@ if game.PlaceId == 70876832253163 then
             task.wait(0.05)
             Remotes.Store:FireServer()
             task.wait(0.05)
-            Event:FireServer(sr)
+            if Config.Only_drop_bond == false then
+              Event:FireServer(sr)
+            end
             
             CollectedBond += 1
-            BondLabel.Text = "Collected bond(s): " .. CollectedBond or 0
+            BondLabel.Text = "Bond(s): " .. CollectedBond or 0
             task.wait(0.10)
           end
         end
@@ -90,14 +114,14 @@ if game.PlaceId == 70876832253163 then
     end
   end)
   
-  local CurrentBond = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"):WaitForChild("BondGui"):WaitForChild("BondInfo"):WaitForChild("BondCount")
+  local CurrentBond = LP:WaitForChild("PlayerGui"):WaitForChild("BondGui"):WaitForChild("BondInfo"):WaitForChild("BondCount")
   local CurrentBondLabel = Instance.new("TextLabel", Window)
   CurrentBondLabel.Name = "Current bond label"
-  CurrentBondLabel.Text = "Current bond(s): " .. tonumber(CurrentBond.Text) or "???"
+  CurrentBondLabel.Text = "Current bond(s): ???"
   CurrentBondLabel.TextColor3 = Color3.fromRGB(0, 170, 255)
   CurrentBondLabel.TextSize = 16
   CurrentBondLabel.Font = Enum.Font.GothamBold
-  CurrentBondLabel.Position = UDim2.new(0, 45, 0, 72)
+  CurrentBondLabel.Position = UDim2.new(0, 75, 0, 72)
   CurrentBondLabel.BackgroundTransparency = 1
   CurrentBond:GetPropertyChangedSignal("Text"):Connect(function()
     CurrentBondLabel.Text = "Current bond(s): " .. tonumber(CurrentBond.Text)
@@ -105,10 +129,12 @@ if game.PlaceId == 70876832253163 then
   
   task.wait(30)
   -- StatusLabel.Text = "Teleport to: Lobby"
-  game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid").Health = 0
-  -- ...
-  task.wait(5)
-  s:Destroy()
+  if Config.Auto_reset == true then
+    LP.Character:WaitForChild("Humanoid").Health = 0
+  end
+  if Config.Auto_teleport == true then
+    TeleportService:Teleport(116495829188952, LP)
+  end
 elseif game.PlaceId == 116495829188952 then
   
 else
