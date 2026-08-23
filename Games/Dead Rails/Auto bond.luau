@@ -110,8 +110,6 @@ if game.PlaceId == 70876832253163 then
         world:add(char, comps.Sack)
         world:set(char, comps.Sack, { contents = {}, maxContents = 10 })
       end
-
-      local Id = 1
       for id = 1, 100000 do
         if world:has(id, comps.Storable) and world:get(id, comps.ObjectId) == "bond" then
           local sr = replicator:get_server_entity(id)
@@ -127,16 +125,15 @@ if game.PlaceId == 70876832253163 then
             task.wait(0.20)
           end
         end
-        Id = id
-      end
-      
-      if Id >= 99999 then
-        if Config.Auto_reset == true then
-          LP.Character:WaitForChild("Humanoid").Health = 0
+        if id >= 99999 then
+          if Config.Auto_reset == true then
+            LP.Character:WaitForChild("Humanoid").Health = 0
+          end
+          if Config.Auto_teleport == true then
+            TeleportService:Teleport(116495829188952, LP)
+          end
         end
-        if Config.Auto_teleport == true then
-          TeleportService:Teleport(116495829188952, LP)
-        end
+        -- end
       end
     end
   end)
