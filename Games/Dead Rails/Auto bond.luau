@@ -1,19 +1,22 @@
 --[[
-local Config = {
+getgenv().Game_config = {
   Auto_reset = true,
   Auto_teleport = true,
   Only_drop_bond = false
 }
 
-getgenv().Auto_bond_config = Config
+getgenv().Lobby_config = {
+  Players_number = 1,
+  Auto_create_party = true
+}
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Zynkore/Hub/refs/heads/main/Games/Dead%20Rails/Auto%20bond.luau"))()
 ]]
 
 if game.PlaceId == 70876832253163 then
   local Config = {
-    Auto_reset = getgenv().Auto_bond_config.Auto_reset,
-    Auto_teleport = getgenv().Auto_bond_config.Auto_teleport,
-    Only_drop_bond = getgenv().Auto_bond_config.Only_drop_bond
+    Auto_reset = getgenv().Game_config.Auto_reset,
+    Auto_teleport = getgenv().Game_config.Auto_teleport,
+    Only_drop_bond = getgenv().Game_config.Only_drop_bond
   }
   
   local Player = game:GetService("Players")
@@ -128,15 +131,15 @@ if game.PlaceId == 70876832253163 then
   end)
   
   task.wait(30)
-  -- StatusLabel.Text = "Teleport to: Lobby"
   if Config.Auto_reset == true then
     LP.Character:WaitForChild("Humanoid").Health = 0
   end
   if Config.Auto_teleport == true then
+    -- StatusLabel.Text = "Status: Teleport to (Lobby)"
     TeleportService:Teleport(116495829188952, LP)
   end
 elseif game.PlaceId == 116495829188952 then
   
 else
-  print('Please join: Game or Lobby, Dead rails')
+  print("Please join: Game or Lobby, Dead rails")
 end
