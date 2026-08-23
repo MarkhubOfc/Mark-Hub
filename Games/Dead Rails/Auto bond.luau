@@ -124,12 +124,15 @@ if game.PlaceId == 70876832253163 then
           end
         end
       end
-    end
-    if Config.Auto_reset == true then
-      LP.Character:WaitForChild("Humanoid").Health = 0
-    end
-    if Config.Auto_teleport == true then
-      TeleportService:Teleport(116495829188952, LP)
+      
+      if id >= 999999 then
+        if Config.Auto_reset == true then
+          LP.Character:WaitForChild("Humanoid").Health = 0
+        end
+        if Config.Auto_teleport == true then
+          TeleportService:Teleport(116495829188952, LP)
+        end
+      end
     end
   end)
 elseif game.PlaceId == 116495829188952 then
