@@ -8,6 +8,7 @@ loadstring(game:HttpGet("https://raw.githubusercontent.com/Zynkore/Hub/refs/head
 
 ## Dead rails (Auto bond)
 ```luau
+getgenv().Auto_load = true
 getgenv().Game_config = {
   Auto_reset = true,
   Auto_teleport = true,
