@@ -66,7 +66,7 @@ if game.PlaceId == 70876832253163 then
 
   local TitleLabel = Instance.new("TextLabel", TitleBar)
   TitleLabel.Name = "Title label"
-  TitleLabel.Text = "Auto Bond - Zynkore / Open source / free"
+  TitleLabel.Text = "Auto Bond - TX Script / Open source / discord: https://discord.gg/PyEETKMGr"
   TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
   TitleLabel.TextSize = 14
   TitleLabel.Font = Enum.Font.GothamBold
