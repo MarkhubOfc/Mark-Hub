@@ -10,9 +10,9 @@ if game.PlaceId == 70876832253163 then
       end
     ]])
   else
-    
+
   end
-  
+
   task.wait()
   local Prefix = getgenv().Game_config
   local Config = {
@@ -20,11 +20,11 @@ if game.PlaceId == 70876832253163 then
     Auto_teleport = Prefix.Auto_teleport,
     Only_drop_bond = Prefix.Only_drop_bond
   }
-
+  
   local Player = game:GetService("Players")
   local RS = game:GetService("ReplicatedStorage")
   local TeleportService = game:GetService("TeleportService")
-
+  
   local LP = Player.LocalPlayer
 
   local world = require(RS:WaitForChild("Shared"):WaitForChild("Universe"):WaitForChild("ECS"):WaitForChild("world"))
@@ -50,7 +50,6 @@ if game.PlaceId == 70876832253163 then
   Window.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
   Window.Active = true
   Window.Draggable = true
-
   local WindowCorner = Instance.new("UICorner", Window)
   WindowCorner.CornerRadius = UDim.new(0, 10)
 
@@ -62,7 +61,6 @@ if game.PlaceId == 70876832253163 then
   TitleBar.Size = UDim2.new(1, 0, 0, 32)
   TitleBar.BackgroundColor3 = Color3.fromRGB(40, 40, 48)
   TitleBar.BorderSizePixel = 0
-
   local TitleBarCorner = Instance.new("UICorner", TitleBar)
   TitleBarCorner.CornerRadius = UDim.new(0, 10)
 
@@ -91,7 +89,7 @@ if game.PlaceId == 70876832253163 then
   BondLabel.Font = Enum.Font.GothamBold
   BondLabel.Position = UDim2.new(0, 45, 0, 45)
   BondLabel.BackgroundTransparency = 1
-  
+
   local CurrentBond = LP:WaitForChild("PlayerGui"):WaitForChild("BondGui"):WaitForChild("BondInfo"):WaitForChild("BondCount")
   local CurrentBondLabel = Instance.new("TextLabel", Window)
   CurrentBondLabel.Name = "Current bond label"
@@ -104,7 +102,7 @@ if game.PlaceId == 70876832253163 then
   CurrentBond:GetPropertyChangedSignal("Text"):Connect(function()
     CurrentBondLabel.Text = "Current bond(s): " .. tonumber(CurrentBond.Text)
   end)
-  
+
   task.wait(3.2)
   task.spawn(function()
     -- By TX Script, discord: https://discord.gg/PyEETKMGr
@@ -129,7 +127,7 @@ if game.PlaceId == 70876832253163 then
             task.wait(0.20)
           end
         end
-        if id >= 99999 then
+        if id > 99999 then
           if Config.Auto_reset == true then
             LP.Character:WaitForChild("Humanoid").Health = 0
           end
@@ -149,9 +147,9 @@ elseif game.PlaceId == 116495829188952 then
       end
     ]])
   else
-    
+
   end
-  
+
   task.wait(1.8)
   local Prefix = getgenv().Lobby_config
   local Config = {
@@ -168,75 +166,37 @@ elseif game.PlaceId == 116495829188952 then
   local PartyConstants = require(RS:WaitForChild("Shared"):WaitForChild("Universe"):WaitForChild("Party"):WaitForChild("PartyConstants"))
   local PartyCreationState = require(RS:WaitForChild("Client"):WaitForChild("Lobby"):WaitForChild("Party"):WaitForChild("PartyCreationState"))
 
-  partyCreated = false
-  partyMembers = 0
-  currentZoneIndex = 0
-  stuckCheckStart = 0
-  waitingForReservation = false
+  local partyZones = workspace:WaitForChild("PartyZones"):GetChildren()
+  table.sort(partyZones, function(a, b) return a.Name < b.Name end)
 
-  function getPartyZones()
-    local partyZones = workspace:WaitForChild("PartyZones")
-    local zones = partyZones:GetChildren()
-    table.sort(zones, function(a, b) return a.Name < b.Name end)
-    return zones
-  end
-
-  function getNextZone()
-    local zones = getPartyZones()
-    currentZoneIndex += 1
-    if currentZoneIndex > #zones then
-      currentZoneIndex = 1
-    end
-    return zones[currentZoneIndex]
-  end
-
-  function teleportToZone(zone)
-    local character = LP.Character
-    if not character then return false end
-    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-    if zone and zone:FindFirstChild("Hitbox") then
-      humanoidRootPart.CFrame = zone.Hitbox.CFrame + Vector3.new(0, 3, 0)
-      return true
-    end
-    return false
-  end
-
-  function doCreateParty()
-    local settings = PartyCreationState.partySettings()
-    if not settings then
-      waitingForReservation = true
-      return false
-    end
-    local newSettings = table.clone(settings)
-    newSettings.maxMembers = Config.Players_number
-    newSettings.isPrivate = false
-    PartyCreationState.partySettings(newSettings)
-    Remotes.CreateParty:FireServer(PartyCreationState.partySettings())
-    partyCreated = true
-    waitingForReservation = false
-    stuckCheckStart = 0
-    return true
-  end
-
-  function resetAndRetry()
-    partyCreated = false
-    waitingForReservation = false
-    stuckCheckStart = 0
-    local zone = getNextZone()
-    if zone then
-      teleportToZone(zone)
-    end
-  end
-
+  local partyCreated = false
+  local partyMembers = 0
+  local currentZoneIndex = 1
+  local stuckCheckStart = 0
+  local waitingForReservation = false
   if Config.Auto_create_party == true then
     task.spawn(function()
-      teleportToZone(getPartyZones()[1])
+      local hrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
+      if hrp and partyZones[1] and partyZones[1]:FindFirstChild("Hitbox") then
+        hrp.CFrame = partyZones[1].Hitbox.CFrame + Vector3.new(0, 3, 0)
+      end
 
       reservedConnection = Remotes.PartyZoneReserved.OnClientEvent:Connect(function()
         waitingForReservation = false
         if not partyCreated then
           task.wait(0.2)
-          doCreateParty()
+          local settings = PartyCreationState.partySettings()
+          if not settings then
+            waitingForReservation = true
+          else
+            local newSettings = table.clone(settings)
+            newSettings.maxMembers = Config.Players_number
+            newSettings.isPrivate = false
+            PartyCreationState.partySettings(newSettings)
+            Remotes.CreateParty:FireServer(PartyCreationState.partySettings())
+            partyCreated = true
+            stuckCheckStart = 0
+          end
         end
       end)
 
@@ -252,7 +212,20 @@ elseif game.PlaceId == 116495829188952 then
         if Config.Auto_recreate_party then
           task.spawn(function()
             task.wait(0.5)
-            resetAndRetry()
+            partyCreated = false
+            waitingForReservation = false
+            stuckCheckStart = 0
+            currentZoneIndex += 1
+            if currentZoneIndex > #partyZones then
+              currentZoneIndex = 1
+            end
+            local zone = partyZones[currentZoneIndex]
+            if zone and zone:FindFirstChild("Hitbox") then
+              local charHrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
+              if charHrp then
+                charHrp.CFrame = zone.Hitbox.CFrame + Vector3.new(0, 3, 0)
+              end
+            end
           end)
         end
       end)
@@ -268,7 +241,20 @@ elseif game.PlaceId == 116495829188952 then
         if Config.Auto_recreate_party then
           task.spawn(function()
             task.wait(0.3)
-            resetAndRetry()
+            partyCreated = false
+            waitingForReservation = false
+            stuckCheckStart = 0
+            currentZoneIndex += 1
+            if currentZoneIndex > #partyZones then
+              currentZoneIndex = 1
+            end
+            local zone = partyZones[currentZoneIndex]
+            if zone and zone:FindFirstChild("Hitbox") then
+              local charHrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
+              if charHrp then
+                charHrp.CFrame = zone.Hitbox.CFrame + Vector3.new(0, 3, 0)
+              end
+            end
           end)
         end
       end)
@@ -280,18 +266,55 @@ elseif game.PlaceId == 116495829188952 then
           if stuckCheckStart == 0 then
             stuckCheckStart = tick()
           elseif tick() - stuckCheckStart > 2 then
-            resetAndRetry()
+            partyCreated = false
+            waitingForReservation = false
+            stuckCheckStart = 0
+            currentZoneIndex += 1
+            if currentZoneIndex > #partyZones then
+              currentZoneIndex = 1
+            end
+            local zone = partyZones[currentZoneIndex]
+            if zone and zone:FindFirstChild("Hitbox") then
+              local charHrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
+              if charHrp then
+                charHrp.CFrame = zone.Hitbox.CFrame + Vector3.new(0, 3, 0)
+              end
+            end
           end
         end
 
         if PartyCreationState.isOpen() and not partyCreated and not waitingForReservation then
           task.wait(0.2)
-          doCreateParty()
+          local settings = PartyCreationState.partySettings()
+          if not settings then
+            waitingForReservation = true
+          else
+            local newSettings = table.clone(settings)
+            newSettings.maxMembers = Config.Players_number
+            newSettings.isPrivate = false
+            PartyCreationState.partySettings(newSettings)
+            Remotes.CreateParty:FireServer(PartyCreationState.partySettings())
+            partyCreated = true
+            stuckCheckStart = 0
+          end
         end
 
         if not partyCreated and not PartyCreationState.isOpen() and not waitingForReservation then
           if Config.Auto_recreate_party then
-            resetAndRetry()
+            partyCreated = false
+            waitingForReservation = false
+            stuckCheckStart = 0
+            currentZoneIndex += 1
+            if currentZoneIndex > #partyZones then
+              currentZoneIndex = 1
+            end
+            local zone = partyZones[currentZoneIndex]
+            if zone and zone:FindFirstChild("Hitbox") then
+              local charHrp = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart")
+              if charHrp then
+                charHrp.CFrame = zone.Hitbox.CFrame + Vector3.new(0, 3, 0)
+              end
+            end
             task.wait(1)
           end
         end
@@ -303,6 +326,7 @@ elseif game.PlaceId == 116495829188952 then
       if joinedConnection then joinedConnection:Disconnect() end
       if expiredConnection then expiredConnection:Disconnect() end
     end)
+  else
   end
 else
   print("Please join: Game or Lobby, Dead rails")
