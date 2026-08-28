@@ -1,4 +1,5 @@
 repeat task.wait() until game:IsLoaded()
+
 print("By TX Script!")
 print("Discord server: https://discord.gg/PyEETKMGr")
 if game.PlaceId == 70876832253163 then
