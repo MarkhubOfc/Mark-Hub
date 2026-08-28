@@ -1,4 +1,6 @@
 repeat task.wait() until game:IsLoaded()
+print("By TX Script!")
+print("Discord server: https://discord.gg/PyEETKMGr")
 if game.PlaceId == 70876832253163 then
   if queue_on_teleport then
     queue_on_teleport([[
@@ -104,6 +106,7 @@ if game.PlaceId == 70876832253163 then
   
   task.wait(3.2)
   task.spawn(function()
+    -- By TX Script, discord: https://discord.gg/PyEETKMGr
     local char = world:get_resource(comps.ClientStateResource).localCharacter
     if char then
       if not world:has(char, comps.Sack) then
