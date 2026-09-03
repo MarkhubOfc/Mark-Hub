@@ -23,4 +23,4 @@ getgenv().Lobby_config = {
 loadstring(game:HttpGet("https://raw.githubusercontent.com/Zynkore/Hub/refs/heads/main/Games/Dead%20Rails/Auto%20bond.luau"))()
 ```
 
-### Lib: Redz V5 `Remake`
+### Lib: Redz V5 `Remake` & Obsidian
