@@ -124,7 +124,6 @@ function GetBeastName()
       end
     end
   end
-  
   return BeastName
 end
 
@@ -807,7 +806,6 @@ local FreezeToggle = EspTabAB:AddToggle("Esp_freezePod", {
           MapFolder = Found
         end
       end
-
       for _, Obj in pairs(MapFolder:GetChildren()) do
         if Obj:IsA("Model") then
           local Highlight = Obj:FindFirstChild("Esp_freeze")
@@ -853,20 +851,12 @@ local ExitToggle = EspTabAB:AddToggle("Esp_exitDoor", {
               local Green = false
               local Yellow = false
               local Red = false
-              for _, Part in pairs(Obj:GetDescendants()) do
-                if Part:IsA("BasePart") == true and Part.Name == "Light" then
-                  local C = Part.Color
-                  local r = C.R
-                  local g = C.G
-                  local b = C.B
-                  if r > b + 0.15 and g > b + 0.15 and math.abs(r - g) < 0.3 then
-                    Yellow = true
-                  elseif g > r + 0.08 and g > b + 0.08 then
-                    Green = true
-                  elseif r > g + 0.08 and r > b + 0.08 then
-                    Red = true
-                  end
-                end
+              if Obj:WaitForChild("Light").Color == Color3.fromRGB(0, 255, 0) then
+                Green = true
+              elseif Obj:WaitForChild("Light").Color == Color3.fromRGB(255, 255, 0) then
+                Yellow = true
+              elseif Obj:WaitForChild("Light").Color == Color3.fromRGB(255, 0, 0) then
+                Red = true
               end
 
               local Color = ExitColorClosed
