@@ -12,8 +12,10 @@ local Window = Library:CreateWindow({
   NotifySide = "Right",
   Resizable = true,
   ShowMobileButtons = true,
-  EnableSidebarResize = true
+  EnableSidebarResize = true,
+  EnableCompacting = true
 })
+Library:Notify("Beta version!", 3)
 
 function serv(Service)
   if Service ~= nil or Service ~= "" then
@@ -109,22 +111,20 @@ function GetBeast()
       end
     end
   end
-  
   return CurrentBeast
 end
 
 function GetBeastName()
-  local BeastName = "Waiting beast name..."
   for _, p in pairs(plr:GetPlayers()) do
     if p then
       if p.Character then
         if p.Character:FindFirstChild("Hammer") then
-          BeastName = p.Name
+          return "<font color='rgb(255, 0, 0)'>" .. p.Name .. "</font>"
         end
       end
     end
   end
-  return BeastName
+  return "Waiting <font color='rgb(255, 0, 0)'>beast</font> name..."
 end
 
 function PlayerInGame(PlayerName)
@@ -188,16 +188,21 @@ InfoTabA:AddToggle("Show_user_display_name", {
   Visible = true
 })
 
-
 InfoTabA:AddLabel("Player skin:")
 local Camera1 = Instance.new("Camera", WS)
-InfoTabA:AddViewport("Index_no_value", {
-  Object = Char,
+local DisplayCharacterViewport = InfoTabA:AddViewport("Index_no_value", {
+  Object = (Char ~= nil and Char or Instance.new("Part", WS)),
   Clone = true,
   Camera = Camera1,
   Interactive = true,
   AutoFocus = true
 })
+task.spawn(function()
+  while true do
+    
+    task.wait(5)
+  end
+end)
 
 local InfoTabB = InfoTab:AddGroupbox({
   Side = "Right",
@@ -233,6 +238,15 @@ CurrentGemstoneName:GetPropertyChangedSignal("Text"):Connect(function()
   end
 end)
 
+InfoTabB:AddButton({
+  Text = "Check gemstone & hammer",
+  Func = function()
+    local OldState = InventoryMenuWindow.Visible
+    InventoryMenuWindow.Visible = true
+    InventoryMenuWindow.Visible = OldState
+  end
+})
+
 local MainTab = Window:AddTab("Main", "house")
 local MainTabA = MainTab:AddGroupbox({
   Side = "Left",
@@ -251,7 +265,6 @@ MainTabA:AddToggle("Spam_beast_ability", {
     Spam_beast_ability = V
     while Spam_beast_ability do
       if not Spam_beast_ability then break end
-      
       local Beast = GetBeast()
       if Beast ~= nil and Beast ~= Char then
         Beast:WaitForChild("BeastPowers"):WaitForChild("PowersEvent"):FireServer("Input")
@@ -278,7 +291,6 @@ MainTabA:AddToggle("Beast_untie_player", {
     if V then
       while Beast_untie_player do
         if not Beast_untie_player then break end
-        
         local Beast = GetBeast()
         if Beast ~= nil then
           if Beast ~= Char then
@@ -315,7 +327,6 @@ MainTabA:AddToggle("Slow_beast", {
     Slow_beast = V
     while Slow_beast do
       if not Slow_beast then break end
-      
       local Beast = GetBeast()
       if Beast ~= nil and Beast ~= Char then
         Beast:WaitForChild("BeastPowers"):WaitForChild("PowersEvent"):FireServer("Jumped")
@@ -423,17 +434,6 @@ PowerActive:GetPropertyChangedSignal("Value"):Connect(function()
   PowerActiveLabel:SetText("Power active: " .. (PowerActive.Value and '<font color="rgb(30, 193, 5)">true</font>' or '<font color="rgb(193, 5, 5)">false</font>'))
 end)
 
---[[
-MainTabAAA:AddLabel({
-  Text = "Beast hammer:",
-  DoesWrap = true,
-  Size = 14,
-  Visible = true
-})
-
-local BeastHammerImage = MainTabAAA
-]]
-
 local MainTabAAB = MainTabAA:AddTab("Game info", "map")
 
 local CurrentMapLabel = MainTabAAB:AddLabel({
@@ -493,7 +493,6 @@ local EspTabA = EspTab:AddTabbox({
   Side = "Left",
   PopOut = false
 })
-
 local EspTabAA = EspTabA:AddTab("Player esp", "wrench")
 
 local BeastV = false
@@ -577,7 +576,6 @@ local SurvivorToggle = EspTabAA:AddToggle("Esp_survivor", {
                 local IsBeast = Character:FindFirstChild("Hammer") ~= nil
                 if IsBeast == false then
                   local Highlight = Character:FindFirstChild("Esp_survivor")
-
                   if Highlight == nil then
                     Highlight = Instance.new("Highlight")
                     Highlight.Name = "Esp_survivor"
@@ -669,7 +667,6 @@ local ComputerToggle = EspTabAB:AddToggle("Esp_computer", {
               MapFolder = Found
             end
           end
-
           for _, Obj in pairs(MapFolder:GetChildren()) do
             if Obj:IsA("Model") and Obj.Name == "ComputerTable" then
               local Screen = Obj:WaitForChild("Screen")
@@ -691,7 +688,6 @@ local ComputerToggle = EspTabAB:AddToggle("Esp_computer", {
               elseif Red then
                 Color = ComputerColorError
               end
-
               local Highlight = Obj:FindFirstChild("Esp_computer")
               if Highlight == nil then
                 Highlight = Instance.new("Highlight")
@@ -719,7 +715,6 @@ local ComputerToggle = EspTabAB:AddToggle("Esp_computer", {
           MapFolder = Found
         end
       end
-
       for _, Obj in pairs(MapFolder:GetChildren()) do
         if Obj:IsA("Model") then
           local Highlight = Obj:FindFirstChild("Esp_computer")
@@ -775,7 +770,6 @@ local FreezeToggle = EspTabAB:AddToggle("Esp_freezePod", {
               MapFolder = Found
             end
           end
-
           for _, Obj in pairs(MapFolder:GetChildren()) do
             if Obj:IsA("Model") and Obj.Name == "FreezePod" then
               local Highlight = Obj:FindFirstChild("Esp_freeze")
@@ -790,7 +784,6 @@ local FreezeToggle = EspTabAB:AddToggle("Esp_freezePod", {
               Highlight.OutlineColor = FreezeColor
             end
           end
-
           if OptimizeHub then
             task.wait(1)
           else
@@ -845,7 +838,6 @@ local ExitToggle = EspTabAB:AddToggle("Esp_exitDoor", {
               MapFolder = Found
             end
           end
-          
           for _, Obj in pairs(MapFolder:GetChildren()) do
             if Obj:IsA("Model") and Obj.Name == "ExitDoor" then
               local Green = false
@@ -858,7 +850,7 @@ local ExitToggle = EspTabAB:AddToggle("Esp_exitDoor", {
               elseif Obj:WaitForChild("Light").Color == Color3.fromRGB(255, 0, 0) then
                 Red = true
               end
-
+              
               local Color = ExitColorClosed
               if Green then
                 Color = ExitColorOpen
@@ -895,7 +887,6 @@ local ExitToggle = EspTabAB:AddToggle("Esp_exitDoor", {
           MapFolder = Found
         end
       end
-
       for _, Obj in pairs(MapFolder:GetChildren()) do
         if Obj:IsA("Model") then
           local Highlight = Obj:FindFirstChild("Esp_exitDoor")
@@ -1297,8 +1288,4 @@ SaveManager:SetLibrary(Library)
 SaveManager:SetFolder("Zynkore/Flee the Facility")
 SaveManager:BuildConfigSection(SettingsTab)
 SaveManager:LoadAutoloadConfig()
-Library:Notify({
-  Title = "Info",
-  Description = "Hub loaded!",
-  Time = 4
-})
+Library:Notify("Hub loaded!", 3)
