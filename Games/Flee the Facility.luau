@@ -44,10 +44,12 @@ local CoreGui = (gethui and gethui() or serv("CoreGui"))
 local PlayerGui = LP:WaitForChild("PlayerGui")
 
 local MenusScreenGui = PlayerGui:WaitForChild("MenusScreenGui")
+local ScreenGui = PlayerGui:WaitForChild("ScreenGui")
 local InventoryMenuWindow = MenusScreenGui:WaitForChild("InventoryMenuWindow")
 
 local CurrentHammer = InventoryMenuWindow:WaitForChild("Body"):WaitForChild("CurrentHammer")
 local CurrentGemstone = InventoryMenuWindow:WaitForChild("Body"):WaitForChild("CurrentGemstone")
+local TimingCircle = ScreenGui:WaitForChild("TimingCircle")
 local StatusBar = PlayerGui:WaitForChild("ScreenGui"):WaitForChild("RoundBar"):WaitForChild("StatusBars")
 
 local CurrentHammerName = CurrentHammer:WaitForChild("BottomLabel")
@@ -142,6 +144,27 @@ local OptimizeHub = true
 local InfoTab = Window:AddTab("Info", "info")
 local InfoTabA = InfoTab:AddGroupbox({
   Side = "Left",
+  Name = "Changelog",
+  IconName = "list",
+  Visible = true,
+  Collapsed = false,
+  DisableCollapsing = false,
+  PopOut = false
+})
+
+InfoTabA:AddLabel({
+  Text = [[  [<font color="rgb(0, 255, 0)">+</font>] Added changelog
+  [<font color="rgb(0, 255, 0)">+</font>] Added No hack fail
+  [<font color="rgb(0, 250, 250)">/</font>] Optimized esp tab UI
+  [<font color="rgb(255, 0, 0)">-</font>] Removed player skin
+  ]],
+  DoesWrap = true,
+  Size = 15,
+  Visible = true
+})
+
+local InfoTabB = InfoTab:AddGroupbox({
+  Side = "Left",
   Name = "User info",
   IconName = "user",
   Visible = true,
@@ -151,13 +174,13 @@ local InfoTabA = InfoTab:AddGroupbox({
 })
 
 local ShowUserName = false
-local UserNameLabel1 = InfoTabA:AddLabel({
+local UserNameLabel1 = InfoTabB:AddLabel({
   Text = "User name: " .. (ShowUserName and LP.Name or "*******"),
   DoesWrap = true,
   Size = 14,
   Visible = true
 })
-InfoTabA:AddToggle("Show_user_name", {
+InfoTabB:AddToggle("Show_user_name", {
   Text = "Show user name",
   Default = false,
   Callback = function(V)
@@ -170,13 +193,13 @@ InfoTabA:AddToggle("Show_user_name", {
 })
 
 local ShowUserDisplayName = true
-local UserDisplayNameLabel1 = InfoTabA:AddLabel({
+local UserDisplayNameLabel1 = InfoTabB:AddLabel({
   Text = "User display name: " .. (ShowUserDisplayName and LP.DisplayName or "*******"),
   DoesWrap = true,
   Size = 14,
   Visible = true
 })
-InfoTabA:AddToggle("Show_user_display_name", {
+InfoTabB:AddToggle("Show_user_display_name", {
   Text = "Show user display name",
   Default = true,
   Callback = function(V)
@@ -188,23 +211,7 @@ InfoTabA:AddToggle("Show_user_display_name", {
   Visible = true
 })
 
-InfoTabA:AddLabel("Player skin:")
-local Camera1 = Instance.new("Camera", WS)
-local DisplayCharacterViewport = InfoTabA:AddViewport("Index_no_value", {
-  Object = (Char ~= nil and Char or Instance.new("Part", WS)),
-  Clone = true,
-  Camera = Camera1,
-  Interactive = true,
-  AutoFocus = true
-})
-task.spawn(function()
-  while true do
-    
-    task.wait(5)
-  end
-end)
-
-local InfoTabB = InfoTab:AddGroupbox({
+local InfoTabC = InfoTab:AddGroupbox({
   Side = "Right",
   Name = "User info (game)",
   IconName = "user",
@@ -214,7 +221,7 @@ local InfoTabB = InfoTab:AddGroupbox({
   PopOut = false
 })
 
-local CurrentHammerLabel = InfoTabB:AddLabel({
+local CurrentHammerLabel = InfoTabC:AddLabel({
   Text = "Current hammer: " .. (tostring(CurrentHammerName.Text) ~= "" and tostring(CurrentHammerName.Text) or "Please open inventory"),
   DoesWrap = true,
   Size = 14,
@@ -226,7 +233,7 @@ CurrentHammerName:GetPropertyChangedSignal("Text"):Connect(function()
   end
 end)
 
-local CurrentGemstoneLabel = InfoTabB:AddLabel({
+local CurrentGemstoneLabel = InfoTabC:AddLabel({
   Text = "Current gemstone: " .. (tostring(CurrentGemstoneName.Text) ~= "" and tostring(CurrentGemstoneName.Text) or "Please open inventory"),
   DoesWrap = true,
   Size = 14,
@@ -238,7 +245,7 @@ CurrentGemstoneName:GetPropertyChangedSignal("Text"):Connect(function()
   end
 end)
 
-InfoTabB:AddButton({
+InfoTabC:AddButton({
   Text = "Check gemstone & hammer",
   Func = function()
     local OldState = InventoryMenuWindow.Visible
@@ -489,14 +496,18 @@ IsGameActive:GetPropertyChangedSignal("Value"):Connect(function()
 end)
 
 local EspTab = Window:AddTab("Esp", "eye")
-local EspTabA = EspTab:AddTabbox({
+local EspTabA = EspTab:AddGroupbox({
   Side = "Left",
+  Name = "Player esp",
+  IconName = "wrench",
+  Visible = true,
+  Collapsed = false,
+  DisableCollapsing = false,
   PopOut = false
 })
-local EspTabAA = EspTabA:AddTab("Player esp", "wrench")
 
 local BeastV = false
-local BeastToggle = EspTabAA:AddToggle("Esp_beast", {
+local BeastToggle = EspTabA:AddToggle("Esp_beast", {
   Text = "Beast",
   Default = false,
   Callback = function(Value)
@@ -561,7 +572,7 @@ BeastToggle:AddColorPicker("BeastColor", {
 })
 
 local SurvivorV = false
-local SurvivorToggle = EspTabAA:AddToggle("Esp_survivor", {
+local SurvivorToggle = EspTabA:AddToggle("Esp_survivor", {
   Text = "Survivor",
   Default = false,
   Callback = function(Value)
@@ -625,7 +636,7 @@ SurvivorToggle:AddColorPicker("SurvivorColor", {
   end
 })
 
-EspTabAA:AddButton({
+EspTabA:AddButton({
   Text = "Reload esp (Players)",
   Func = function()
     for _, Player in pairs(plr:GetPlayers()) do
@@ -649,10 +660,18 @@ EspTabAA:AddButton({
   Disabled = false,
   Visible = true
 })
-local EspTabAB = EspTabA:AddTab("Map esp", "hammer")
+local EspTabB = EspTab:AddGroupbox({
+  Side = "Right",
+  Name = "Map esp",
+  IconName = "hammer",
+  Visible = true,
+  Collapsed = false,
+  DisableCollapsing = false,
+  PopOut = false
+})
 
 local ComputerV = false
-local ComputerToggle = EspTabAB:AddToggle("Esp_computer", {
+local ComputerToggle = EspTabB:AddToggle("Esp_computer", {
   Text = "Computer",
   Default = false,
   Callback = function(Value)
@@ -670,7 +689,6 @@ local ComputerToggle = EspTabAB:AddToggle("Esp_computer", {
           for _, Obj in pairs(MapFolder:GetChildren()) do
             if Obj:IsA("Model") and Obj.Name == "ComputerTable" then
               local Screen = Obj:WaitForChild("Screen")
-              
               local Green = false
               local Red = false
               if Screen.Color == Color3.fromRGB(40, 127, 71) then
@@ -755,7 +773,7 @@ ComputerToggle:AddColorPicker("ComputerColorError", {
 })
 
 local FreezeV = false
-local FreezeToggle = EspTabAB:AddToggle("Esp_freezePod", {
+local FreezeToggle = EspTabB:AddToggle("Esp_freezePod", {
   Text = "FreezePod",
   Default = false,
   Callback = function(Value)
@@ -823,7 +841,7 @@ FreezeToggle:AddColorPicker("FreezeColorPicker", {
 })
 
 local ExitV = false
-local ExitToggle = EspTabAB:AddToggle("Esp_exitDoor", {
+local ExitToggle = EspTabB:AddToggle("Esp_exitDoor", {
   Text = "ExitDoor",
   Default = false,
   Callback = function(Value)
@@ -927,7 +945,7 @@ ExitToggle:AddColorPicker("ExitColorOpen", {
 })
 
 local LockerV = false
-local LockerToggle = EspTabAB:AddToggle("Esp_locker", {
+local LockerToggle = EspTabB:AddToggle("Esp_locker", {
   Text = "Locker",
   Default = false,
   Callback = function(Value)
@@ -980,7 +998,7 @@ LockerToggle:AddColorPicker("LockerColorPicker", {
   end
 })
 
-EspTabAB:AddButton({
+EspTabB:AddButton({
   Text = "Reload esp (Map)",
   Func = function()
     local MapFolder = WS
@@ -990,7 +1008,6 @@ EspTabAB:AddButton({
         MapFolder = Found
       end
     end
-
     for _, Obj in pairs(MapFolder:GetChildren()) do
       if Obj:IsA("Model") then
         local ComputerHighlight = Obj:FindFirstChild("Esp_computer")
@@ -1007,7 +1024,6 @@ EspTabAB:AddButton({
         end
       end
     end
-
     for _, Obj in pairs(Lockers) do
       if Obj.Parent ~= nil then
         local Highlight = Obj:FindFirstChild("Esp_locker")
@@ -1168,6 +1184,39 @@ local ToolsTabB = ToolsTab:AddGroupbox({
   PopOut = false
 })
 
+local No_hack_fail = false
+local OldHook
+OldHook = hookmetamethod(game, "__namecall", function(self, ...)
+  local Method = getnamecallmethod()
+  local Args = {...}
+  if Method == "FireServer" and self == RemoteEvent then
+    if Args[1] == "SetPlayerMinigameResult" then
+      Args[2] = (No_hack_fail and true or Args[2])
+    end
+  end
+  
+  return OldHook(self, table.unpack(Args))
+end)
+
+ToolsTabB:AddToggle("No_hack_fail", {
+  Text = "No hack fail",
+  Default = false,
+  Callback = function(V)
+    No_hack_fail = V
+    while No_hack_fail do
+      if not No_hack_fail then return end
+      if TimingCircle.Visible then
+        RemoteEvent:FireServer("Input", "Action", true)
+        RemoteEvent:FireServer("SetPlayerMinigameResult", true)
+      end
+      task.wait()
+    end
+  end,
+  Risky = false,
+  Disabled = false,
+  Visible = true
+})
+
 local Auto_save_players_silent = false
 ToolsTabB:AddToggle("Auto_save_players_silent", {
   Text = "Auto save players (silent)",
@@ -1181,7 +1230,6 @@ ToolsTabB:AddToggle("Auto_save_players_silent", {
           MapFolder = Found
         end
       end
-      
       if PlayerInGame(tostring(LP.Name)) and GetBeast() ~= nil and GetBeast() ~= Char and IsGameActive.Value then
         for _, Obj in pairs(MapFolder:GetChildren()) do
           if Obj.Name == "FreezePod" and Obj:IsA("Model") then
@@ -1190,17 +1238,16 @@ ToolsTabB:AddToggle("Auto_save_players_silent", {
               if TorsoPart.Value ~= nil then
                 if Ragdoll.Value == false then
                   if Escaped.Value == false then
-                    if Captured.Value == false then -- and OnTrigger.Value == false then
+                    if Captured.Value == false then
                       local OldTriggerPos = Obj.PodTrigger.CFrame
-                      local OldActionInputValue = ActionInput.Value
-                      
+                      local OldOnTriggerValue = OnTrigger.Value
                       task.wait()
                       Obj.PodTrigger.CFrame = HRP.CFrame -- + Vector3.new(0, 0, 5)
                       task.wait(0.01)
                       -- firetouchinterest(Obj.PodTrigger, HRP, 1)
                       RemoteEvent:FireServer("Input", "Action", true, Obj.PodTrigger.Event)
                       Obj.PodTrigger.CFrame = OldTriggerPos
-                      ActionInput.Value = OldActionInputValue
+                      ActionInput.Value = OldOnTriggerValue
                     end
                   end
                 end
