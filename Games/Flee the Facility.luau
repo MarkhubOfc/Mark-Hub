@@ -21,6 +21,7 @@ function serv(Service)
   if Service ~= nil or Service ~= "" then
     return (cloneref and cloneref(game:GetService(Service)) or game:GetService(Service))
   end
+  return game:GetService(Service)
 end
 
 local WS = serv("Workspace")
@@ -90,7 +91,6 @@ local FreezeColor = Color3.fromRGB(43, 185, 251)
 local LockerColor = Color3.fromRGB(255, 105, 180)
 
 local Lockers = CS:GetTagged("LOCKER")
-
 CS:GetInstanceAddedSignal("LOCKER"):Connect(function(Obj)
   if table.find(Lockers, Obj) == nil then
     table.insert(Lockers, Obj)
@@ -153,11 +153,7 @@ local InfoTabA = InfoTab:AddGroupbox({
 })
 
 InfoTabA:AddLabel({
-  Text = [[  [<font color="rgb(0, 255, 0)">+</font>] Added changelog
-  [<font color="rgb(0, 255, 0)">+</font>] Added No hack fail
-  [<font color="rgb(0, 250, 250)">/</font>] Optimized esp tab UI
-  [<font color="rgb(255, 0, 0)">-</font>] Removed player skin
-  ]],
+  Text = [[ [<font color="rgb(0, 255, 255)">/</font>] Beast untie player optimized]],
   DoesWrap = true,
   Size = 15,
   Visible = true
@@ -289,36 +285,26 @@ MainTabA:AddToggle("Spam_beast_ability", {
 })
 
 local Beast_untie_player = false
-local Untie_con = nil
-local OldBeast = nil
 MainTabA:AddToggle("Beast_untie_player", {
   Text = "Beast untie player",
   Callback = function(V)
     Beast_untie_player = V
-    if V then
-      while Beast_untie_player do
-        if not Beast_untie_player then break end
-        local Beast = GetBeast()
-        if Beast ~= nil then
-          if Beast ~= Char then
-            local Hammer = Beast:WaitForChild("Hammer")
-            local HammerEvent = Hammer:WaitForChild("HammerEvent")
-            if Beast:FindFirstChild("Part") and Beast.Part:FindFirstChild("RopeConstraint") then
-              HammerEvent:FireServer("HammerClick", true)
-            end
+    while Beast_untie_player do
+      if not Beast_untie_player then break end
+      local Beast = GetBeast()
+      if Beast ~= nil then
+        if Beast ~= Char then
+          local Hammer = Beast:WaitForChild("Hammer")
+          local HammerEvent = Hammer:WaitForChild("HammerEvent")
+          if Beast:FindFirstChild("Part") and Beast.Part:FindFirstChild("RopeConstraint") then
+            HammerEvent:FireServer("HammerClick", true)
           end
         end
-        if OptimizeHub then
-          task.wait(0.30)
-        else
-          task.wait(0.15)
-        end
       end
-    else
-      OldBeast = nil
-      if Untie_con then
-        Untie_con:Disconnect()
-        Untie_con = nil
+      if OptimizeHub then
+        task.wait(0.20)
+      else
+        task.wait(0.15)
       end
     end
   end,
@@ -651,10 +637,7 @@ EspTabA:AddButton({
         end
       end
     end
-    Library:Notify({
-      Title = "Esp info: \nPlayers esp reloaded!",
-      Time = 4
-    })
+    Library:Notify("Esp info: \nPlayers esp reloaded!", 2.7)
   end,
   Risky = false,
   Disabled = false,
@@ -1034,10 +1017,7 @@ EspTabB:AddButton({
     end
     
     Lockers = CS:GetTagged("LOCKER")
-    Library:Notify({
-      Title = "Esp info: \nMap esp reloaded!",
-      Time = 4
-    })
+    Library:Notify("Esp info: \nMap esp reloaded!", 4)
   end,
   Risky = false,
   Disabled = false,
