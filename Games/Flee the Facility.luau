@@ -72,6 +72,12 @@ local GameTimer = RPS:WaitForChild("GameTimer")
 local ComputersLeft = RPS:WaitForChild("ComputersLeft")
 local IsGameActive = RPS:WaitForChild("IsGameActive")
 local CurrentMap = RPS:WaitForChild("CurrentMap")
+local CurrentMapValue = CurrentMap.Value
+CurrentMap:GetPropertyChangedSignal("Value"):Connect(function()
+  if CurrentMap.Value ~= nil then
+    CurrentMapValue = CurrentMap.Value
+  end
+end)
 
 local CurrentPower = RPS:WaitForChild("CurrentPower")
 local PowerActive = RPS:WaitForChild("PowerActive")
@@ -153,8 +159,8 @@ local InfoTabA = InfoTab:AddGroupbox({
 })
 
 InfoTabA:AddLabel({
-  Text = [[  [<font color="rgb(0, 255, 0)">+</font>] Added auto enable/disable optimize hub
-  [<font color="rgb(0, 255, 0)">+</font>] Added auto enable/disable optimize hub slider]],
+  Text = [[  [<font color="rgb(0, 255, 0)">+</font>] Added Unload button
+  [<font color="rgb(0, 255, 0)">+</font>] Added Desync toggle (Not tested)]],
   DoesWrap = true,
   Size = 15,
   Visible = true
@@ -263,7 +269,7 @@ local MainTabA = MainTab:AddGroupbox({
 })
 
 local Spam_beast_ability = false
-MainTabA:AddToggle("Spam_beast_ability", {
+local Spam_beast_ability_toggle = MainTabA:AddToggle("Spam_beast_ability", {
   Text = "Spam beast ability",
   Callback = function(V)
     Spam_beast_ability = V
@@ -286,7 +292,7 @@ MainTabA:AddToggle("Spam_beast_ability", {
 })
 
 local Beast_untie_player = false
-MainTabA:AddToggle("Beast_untie_player", {
+local Beast_untie_player_toggle = MainTabA:AddToggle("Beast_untie_player", {
   Text = "Beast untie player",
   Callback = function(V)
     Beast_untie_player = V
@@ -315,7 +321,7 @@ MainTabA:AddToggle("Beast_untie_player", {
 })
 
 local Slow_beast = false
-MainTabA:AddToggle("Slow_beast", {
+local Slow_beast_toggle = MainTabA:AddToggle("Slow_beast", {
   Text = "Slow beast",
   Callback = function(V)
     Slow_beast = V
@@ -339,7 +345,7 @@ MainTabA:AddToggle("Slow_beast", {
 
 local Slow_beast_aura_distance = 25
 local Slow_beast_aura = false
-MainTabA:AddToggle("Slow_beast_aura", {
+local Slow_beast_aura_toggle = MainTabA:AddToggle("Slow_beast_aura", {
   Text = "Slow beast aura",
   Callback = function(V)
     Slow_beast_aura = V
@@ -368,7 +374,6 @@ MainTabA:AddToggle("Slow_beast_aura", {
   Disabled = false,
   Visible = true
 })
-
 MainTabA:AddSlider("Slow_beast_aura_distance", {
   Text = "Distance",
   Default = 25,
@@ -431,13 +436,13 @@ end)
 local MainTabAAB = MainTabAA:AddTab("Game info", "map")
 
 local CurrentMapLabel = MainTabAAB:AddLabel({
-  Text = "Current map: <font color='rgb(251, 177, 43)'>" .. (tostring(CurrentMap.Value) ~= "" and tostring(CurrentMap.Value) or "No map avaible!") .. "</font>",
+  Text = "Current map: <font color='rgb(251, 177, 43)'>" .. (CurrentMap.Value ~= nil and tostring(CurrentMap.Value.Name) or "No map avaible!") .. "</font>",
   DoesWrap = true,
   Size = 14,
   Visible = true
 })
 CurrentMap:GetPropertyChangedSignal("Value"):Connect(function()
-  CurrentMapLabel:SetText("Current map: <font color='rgb(251, 177, 43)'>" .. (tostring(CurrentMap.Value) ~= "" and tostring(CurrentMap.Value) or "No map avaible!") .. "</font>")
+  CurrentMapLabel:SetText("Current map: <font color='rgb(251, 177, 43)'>" .. (CurrentMap.Value ~= nil and tostring(CurrentMap.Value.Name) or "No map avaible!") .. "</font>")
 end)
 MainTabAAB:AddDivider()
 
@@ -1016,7 +1021,6 @@ EspTabB:AddButton({
         end
       end
     end
-    
     Lockers = CS:GetTagged("LOCKER")
     Library:Notify("Esp info: \nMap esp reloaded!", 4)
   end,
@@ -1036,9 +1040,34 @@ local ToolsTabA = ToolsTab:AddGroupbox({
   PopOut = false
 })
 
+local Desync_local_player_toggle = ToolsTabA:AddToggle("Desync_local_player", {
+  Text = "Desync local player (Risky)",
+  Default = false,
+  Callback = function(V)
+    if raknet.is_enabled then
+      if raknet.is_enabled() then
+        if raknet.desync then
+          raknet.desync(V)
+        end
+      else
+        Library:Notify("Please enable raknet", 3)
+      end
+    end
+  end,
+  Risky = true,
+  Disabled = true,
+  Visible = true
+})
+if raknet then
+  Desync_local_player_toggle:SetDisabled(false)
+  Library:Notify("Raknet avaible!", 3)
+else
+  Library:Notify("You don't have access to raknet.", 3)
+end
+
 local Hit_distance = 15
 local Auto_hit_nearest_player = false
-ToolsTabA:AddToggle("Auto_hit_nearest_player", {
+local Auto_hit_nearest_player_toggle = ToolsTabA:AddToggle("Auto_hit_nearest_player", {
   Text = "Auto hit nearest player",
   Callback = function(V)
     Auto_hit_nearest_player = V
@@ -1097,7 +1126,7 @@ ToolsTabA:AddSlider("Auto_hit_nearest_player_distance", {
 
 local Tie_up_distance = 15
 local Auto_tie_up_nearest_player = false
-ToolsTabA:AddToggle("Auto_tie_up_nearest_player", {
+local Auto_tie_up_nearest_player_toggle = ToolsTabA:AddToggle("Auto_tie_up_nearest_player", {
   Text = "Auto tie up nearest player",
   Callback = function(V)
     Auto_tie_up_nearest_player = V
@@ -1178,8 +1207,7 @@ OldHook = hookmetamethod(game, "__namecall", function(self, ...)
   
   return OldHook(self, table.unpack(Args))
 end)
-
-ToolsTabB:AddToggle("No_hack_fail", {
+local No_hack_fail_toggle = ToolsTabB:AddToggle("No_hack_fail", {
   Text = "No hack fail",
   Default = false,
   Callback = function(V)
@@ -1199,7 +1227,7 @@ ToolsTabB:AddToggle("No_hack_fail", {
 })
 
 local Auto_save_players_silent = false
-ToolsTabB:AddToggle("Auto_save_players_silent", {
+local Auto_save_players_silent_toggle = ToolsTabB:AddToggle("Auto_save_players_silent", {
   Text = "Auto save players (silent)",
   Callback = function(V)
     Auto_save_players_silent = V
@@ -1271,12 +1299,15 @@ Atmosphere:GetPropertyChangedSignal("Offset"):Connect(function()
     Atmosphere.Offset = 0
   end
 end)
-FogTabA:AddToggle("NoFog", {
+local NoFog_toggle = FogTabA:AddToggle("NoFog", {
   Text = "No fog",
   Callback = function(V)
     NoFog = V
     if V then
       Atmosphere.Density = 0
+      Atmosphere.Offset = 0
+    else
+      Atmosphere.Density = 0.8
       Atmosphere.Offset = 0
     end
   end,
@@ -1309,7 +1340,7 @@ local OptimizeHubToggle = SettingsTabA:AddToggle("Optimize_hub", {
 
 local Min_fps = 40
 local Auto_enable_optimize_hub = true
-SettingsTabA:AddToggle("Auto_enable_optimize_hub", {
+local Auto_enable_optimize_hub_toggle = SettingsTabA:AddToggle("Auto_enable_optimize_hub", {
   Text = "Auto enable optimize hub",
   Default = true,
   Callback = function(V)
@@ -1351,6 +1382,32 @@ SettingsTabA:AddSlider("Min_fps", {
   Disabled = false,
   Visible = true
 })
+
+SettingsTabA:AddButton({
+  Text = "Unload",
+  Func = function()
+    Library:Notify("Unloading!", 3)
+    Library:Unload()
+  end
+})
+Library:OnUnload(function()
+  Spam_beast_ability_toggle:SetValue(false)
+  Beast_untie_player_toggle:SetValue(false)
+  Slow_beast_toggle:SetValue(false)
+  Slow_beast_aura_toggle:SetValue(false)
+  BeastToggle:SetValue(false)
+  SurvivorToggle:SetValue(false)
+  ComputerToggle:SetValue(false)
+  FreezeToggle:SetValue(false)
+  ExitToggle:SetValue(false)
+  LockerToggle:SetValue(false)
+  Desync_local_player_toggle:SetValue(false)
+  Auto_hit_nearest_player_toggle:SetValue(false)
+  Auto_tie_up_nearest_player_toggle:SetValue(false)
+  No_hack_fail_toggle:SetValue(false)
+  Auto_save_players_silent_toggle:SetValue(false)
+  NoFog_toggle:SetValue(false)
+end)
 
 ThemeManager:SetLibrary(Library)
 ThemeManager:SetFolder("Zynkore/Flee the facility")
