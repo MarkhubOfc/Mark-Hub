@@ -153,7 +153,8 @@ local InfoTabA = InfoTab:AddGroupbox({
 })
 
 InfoTabA:AddLabel({
-  Text = [[ [<font color="rgb(0, 255, 255)">/</font>] Beast untie player optimized]],
+  Text = [[  [<font color="rgb(0, 255, 0)">+</font>] Added auto enable/disable optimize hub
+  [<font color="rgb(0, 255, 0)">+</font>] Added auto enable/disable optimize hub slider]],
   DoesWrap = true,
   Size = 15,
   Visible = true
@@ -1295,13 +1296,58 @@ local SettingsTabA = SettingsTab:AddGroupbox({
   PopOut = false
 })
 
-SettingsTabA:AddToggle("Optimize_hub", {
+local OptimizeHubToggle = SettingsTabA:AddToggle("Optimize_hub", {
   Text = "Optimize hub",
   Default = true,
   Callback = function(Value)
     OptimizeHub = Value
   end,
   Risky = false,
+  Disabled = false,
+  Visible = true
+})
+
+local Min_fps = 40
+local Auto_enable_optimize_hub = true
+SettingsTabA:AddToggle("Auto_enable_optimize_hub", {
+  Text = "Auto enable optimize hub",
+  Default = true,
+  Callback = function(V)
+    Auto_enable_optimize_hub = V
+  end,
+  Risky = false,
+  Disabled = false,
+  Visible = true
+})
+task.spawn(function()
+  while true do
+    task.wait(1)
+    if Auto_enable_optimize_hub then
+      local fps = math.floor(WS:GetRealPhysicsFPS())
+      if fps <= Min_fps then
+        if OptimizeHub == false then
+          Library:Notify("Optimize hub auto enabled!", 3)
+          OptimizeHubToggle:SetValue(true)
+        end
+      elseif fps > Min_fps then
+        if OptimizeHub == true then
+          Library:Notify("Optimize hub auto disabled!", 3)
+          OptimizeHubToggle:SetValue(false)
+        end
+      end
+    end
+  end
+end)
+SettingsTabA:AddSlider("Min_fps", {
+  Text = "Min fps",
+  Default = 40,
+  Min = 10,
+  Max = 60,
+  Rounding = 0,
+  Compact = true,
+  Callback = function(V)
+    Min_fps = V
+  end,
   Disabled = false,
   Visible = true
 })
