@@ -160,7 +160,7 @@ local InfoTabA = InfoTab:AddGroupbox({
 
 InfoTabA:AddLabel({
   Text = [[  [<font color="rgb(0, 255, 0)">+</font>] Added Auto farm (<font color="rgb(255, 0, 0)">beast</font>, not tested)
-  [<font color="rgb(0, 255, 0)">+</font>] Added Slow besst runner]],
+  [<font color="rgb(0, 255, 0)">+</font>] Added Slow beast runner]],
   DoesWrap = true,
   Size = 15,
   Visible = true
