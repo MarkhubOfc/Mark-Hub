@@ -159,8 +159,8 @@ local InfoTabA = InfoTab:AddGroupbox({
 })
 
 InfoTabA:AddLabel({
-  Text = [[  [<font color="rgb(0, 255, 0)">+</font>] Added Unload button
-  [<font color="rgb(0, 255, 0)">+</font>] Added Desync toggle (Not tested)]],
+  Text = [[  [<font color="rgb(0, 255, 0)">+</font>] Added Auto farm (<font color="rgb(255, 0, 0)">beast</font>, not tested)
+  [<font color="rgb(0, 255, 0)">+</font>] Added Slow besst runner]],
   DoesWrap = true,
   Size = 15,
   Visible = true
@@ -260,7 +260,85 @@ InfoTabC:AddButton({
 local MainTab = Window:AddTab("Main", "house")
 local MainTabA = MainTab:AddGroupbox({
   Side = "Left",
-  Name = "Beast ragebait",
+  Name = "Auto farm - <font color='rgb(255, 0, 0)'>beast</font>",
+  IconName = "user",
+  Visible = true,
+  Collapsed = false,
+  DisableCollapsing = false,
+  PopOut = false
+})
+
+local Auto_farm_beast = false
+local Auto_farm_beast_toggle = MainTabA:AddToggle("Enable_Auto_farm_beast", {
+  Text = "Enable auto farm",
+  Default = false,
+  Callback = function(V)
+    Auto_farm_beast = V
+    while Auto_farm_beast do
+      local Beast = GetBeast()
+      if Beast ~= nil and Beast == Char then
+        for _, p in pairs(plr:GetPlayers()) do
+          if p and p ~= LP then
+            if PlayerInGame(p.Name) and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+              local pModule = p:WaitForChild("TempPlayerStatsModule")
+              if not pModule:WaitForChild("Escaped").Value then
+                if not pModule:WaitForChild("Captured").Value then
+                  HRP.CFrame = p.Character.HumanoidRootPart.CFrame + CFrame.new(0, 0, 5)
+                  if pModule:WaitForChild("Ragdoll").Value then
+                    Beast.Hammer.HammerEvent:FireServer("HammerTieUp", p.Character.HumanoidRootPart, p.Character.HumanoidRootPart.Position + Vector3.new(0, 0.001, 0))
+                    if Beast:FindFirstChild("Part") and Beast.Part:FindFirstChild("RopeConstraint") then
+                      for _, Obj in pairs(CurrentMapValue ~= nil and CurrentMapValue:GetChildren() or {}) do
+                        if Obj.Name == "FreezePod" and Obj:IsA("Model") then
+                          if Obj:FindFirstChild("PodTrigger") then
+                            local PodTrigger = Obj.PodTrigger
+                            local CapturedTorso = PodTrigger:WaitForChild("CapturedTorso")
+                            if CapturedTorso.Value == nil then
+                              local OldPodTriggerPos = PodTrigger.CFrame
+                              PodTrigger.CFrame = HRP + Vector3.new(0, 0, 5)
+                              firetouchinterest(PodTrigger, HRP, 1)
+                              RemoteEvent:FireServer("Input", "Action", false)
+                              RemoteEvent:FireServer("Input", "Action", true, PodTrigger.Event)
+                              PodTrigger.CFrame = OldPodTriggerPos
+                              continue
+                            end
+                          end
+                        end
+                      end
+                    end
+                  else
+                    Beast.Hammer.HammerEvent:FireServer("HammerHit", p.Character.HumanoidRootPart)
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
+      if OptimizeHub then
+        task.wait(0.10)
+      else
+        task.wait()
+      end
+    end
+  end,
+  Risky = true,
+  Disabled = false,
+  Visible = true
+})
+
+local MainTabB = MainTab:AddGroupbox({
+  Side = "Right",
+  Name = "Auto farm - <font color='rgb(0, 255, 0)'>survivor</font>",
+  IconName = "user",
+  Visible = true,
+  Collapsed = false,
+  DisableCollapsing = false,
+  PopOut = false
+})
+
+local MainTabC = MainTab:AddGroupbox({
+  Side = "Left",
+  Name = "Ragebait beast",
   IconName = "star",
   Visible = true,
   Collapsed = false,
@@ -269,7 +347,7 @@ local MainTabA = MainTab:AddGroupbox({
 })
 
 local Spam_beast_ability = false
-local Spam_beast_ability_toggle = MainTabA:AddToggle("Spam_beast_ability", {
+local Spam_beast_ability_toggle = MainTabC:AddToggle("Spam_beast_ability", {
   Text = "Spam beast ability",
   Callback = function(V)
     Spam_beast_ability = V
@@ -292,7 +370,7 @@ local Spam_beast_ability_toggle = MainTabA:AddToggle("Spam_beast_ability", {
 })
 
 local Beast_untie_player = false
-local Beast_untie_player_toggle = MainTabA:AddToggle("Beast_untie_player", {
+local Beast_untie_player_toggle = MainTabC:AddToggle("Beast_untie_player", {
   Text = "Beast untie player",
   Callback = function(V)
     Beast_untie_player = V
@@ -321,7 +399,7 @@ local Beast_untie_player_toggle = MainTabA:AddToggle("Beast_untie_player", {
 })
 
 local Slow_beast = false
-local Slow_beast_toggle = MainTabA:AddToggle("Slow_beast", {
+local Slow_beast_toggle = MainTabC:AddToggle("Slow_beast", {
   Text = "Slow beast",
   Callback = function(V)
     Slow_beast = V
@@ -345,7 +423,7 @@ local Slow_beast_toggle = MainTabA:AddToggle("Slow_beast", {
 
 local Slow_beast_aura_distance = 25
 local Slow_beast_aura = false
-local Slow_beast_aura_toggle = MainTabA:AddToggle("Slow_beast_aura", {
+local Slow_beast_aura_toggle = MainTabC:AddToggle("Slow_beast_aura", {
   Text = "Slow beast aura",
   Callback = function(V)
     Slow_beast_aura = V
@@ -374,7 +452,7 @@ local Slow_beast_aura_toggle = MainTabA:AddToggle("Slow_beast_aura", {
   Disabled = false,
   Visible = true
 })
-MainTabA:AddSlider("Slow_beast_aura_distance", {
+MainTabC:AddSlider("Slow_beast_aura_distance", {
   Text = "Distance",
   Default = 25,
   Min = 1,
@@ -390,11 +468,38 @@ MainTabA:AddSlider("Slow_beast_aura_distance", {
   Visible = true
 })
 
-local MainTabAA = MainTab:AddTabbox({
+local Slow_beast_runner = false
+local Slow_beast_runner_toggle = MainTabC:AddToggle("Slow_beast_runner", {
+  Text = "Slow beast runner",
+  Callback = function(V)
+    Slow_beast_runner = V
+    if V then
+      local Beast = GetBeast()
+      if Beast ~= nil and Beast ~= Char then
+        if PowerActive.Value and CurrentPower.Value == "Runner" then
+          Beast.BeastPowers.PowersEvent:FireServer("Jumped")
+        end
+      end
+    end
+  end,
+  Risky = false,
+  Disabled = false,
+  Visible = true
+})
+PowerActive:GetPropertyChangedSignal("Value"):Connect(function()
+  local Beast = GetBeast()
+  if Beast ~= nil and Beast ~= Char then
+    if PowerActive.Value and CurrentPower.Value == "Runner" then
+      Beast.BeastPowers.PowersEvent:FireServer("Jumped")
+    end
+  end
+end)
+
+local MainTabDA = MainTab:AddTabbox({
   Side = "Right",
   PopOut = false
 })
-local MainTabAAA = MainTabAA:AddTab("Beast info", "user")
+local MainTabAAA = MainTabDA:AddTab("Beast info", "user")
 
 local BeastNameLabel = MainTabAAA:AddLabel({
   Text = "Beast name: " .. (GetBeastName() ~= LP.Name and GetBeastName() or "You are the <font color='rgb(255, 0, 0)'>beast</font>."),
@@ -433,7 +538,7 @@ PowerActive:GetPropertyChangedSignal("Value"):Connect(function()
   PowerActiveLabel:SetText("Power active: " .. (PowerActive.Value and '<font color="rgb(30, 193, 5)">true</font>' or '<font color="rgb(193, 5, 5)">false</font>'))
 end)
 
-local MainTabAAB = MainTabAA:AddTab("Game info", "map")
+local MainTabAAB = MainTabDA:AddTab("Game info", "map")
 
 local CurrentMapLabel = MainTabAAB:AddLabel({
   Text = "Current map: <font color='rgb(251, 177, 43)'>" .. (CurrentMap.Value ~= nil and tostring(CurrentMap.Value.Name) or "No map avaible!") .. "</font>",
@@ -1156,7 +1261,6 @@ local Auto_tie_up_nearest_player_toggle = ToolsTabA:AddToggle("Auto_tie_up_neare
           end
         end
       end
-        
       if OptimizeHub then
         task.wait(0.35)
       else
@@ -1352,12 +1456,12 @@ local Auto_enable_optimize_hub_toggle = SettingsTabA:AddToggle("Auto_enable_opti
 })
 task.spawn(function()
   while true do
-    task.wait(1)
+    task.wait(0.5)
     if Auto_enable_optimize_hub then
       local fps = math.floor(WS:GetRealPhysicsFPS())
       if fps <= Min_fps then
         if OptimizeHub == false then
-          Library:Notify("Optimize hub auto enabled!", 3)
+          Library:Notify("Optimize hub auto enabled! fps: " .. tostring(fps), 3)
           OptimizeHubToggle:SetValue(true)
         end
       elseif fps > Min_fps then
@@ -1391,10 +1495,12 @@ SettingsTabA:AddButton({
   end
 })
 Library:OnUnload(function()
+  Auto_farm_beast_toggle:SetValue(false)
   Spam_beast_ability_toggle:SetValue(false)
   Beast_untie_player_toggle:SetValue(false)
   Slow_beast_toggle:SetValue(false)
   Slow_beast_aura_toggle:SetValue(false)
+  Slow_beast_runner:SetValue(false)
   BeastToggle:SetValue(false)
   SurvivorToggle:SetValue(false)
   ComputerToggle:SetValue(false)
