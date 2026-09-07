@@ -10,7 +10,7 @@ local TorsoPart = nil
 local Mode = 'R15'
 
 local CurrentTween = nil
-local function new(c, p)
+function new(c, p)
 	local k = Instance.new(c)
 	for pp, v in pairs(p or {}) do
 		k[pp] = v
@@ -18,7 +18,7 @@ local function new(c, p)
 	return k
 end
 
-local function UpdateCharacterReferences()
+function UpdateCharacterReferences()
 	if not LP.Character then return end
 	Char = LP.Character
 	HRP = Char:WaitForChild('HumanoidRootPart', 5)
