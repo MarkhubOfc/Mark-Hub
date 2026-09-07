@@ -21,8 +21,8 @@ end
 function UpdateCharacterReferences()
 	if not LP.Character then return end
 	Char = LP.Character
-	HRP = Char:WaitForChild('HumanoidRootPart', 5)
-	Humanoid = Char:WaitForChild('Humanoid', 5)
+	HRP = Char:WaitForChild('HumanoidRootPart')
+	Humanoid = Char:WaitForChild('Humanoid')
 	if Mode == 'R6' then
 		TorsoPart = Char:FindFirstChild('Torso')
 	elseif Mode == 'R15' then
@@ -95,16 +95,14 @@ function TweenModule:GetActiveTween()
 end
 
 function TweenModule:CancelTween()
+    if CurrentTween then
+		CurrentTween:Cancel()
+		CurrentTween = nil
+	end
     local FlyBV = HRP:FindFirstChild('StabDontDeleted')
 	if FlyBV then
 		FlyBV:Destroy()
 		FlyBV = nil
-	elseif HRP and HRP:FindFirstChild('StabDontDelete') then
-		HRP.StabDontDelete:Destroy()
-	end
-	if CurrentTween then
-		CurrentTween:Cancel()
-		CurrentTween = nil
 	end
 	if TorsoPart then
 		if TorsoPart.CanCollide == false then
