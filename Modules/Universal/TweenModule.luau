@@ -37,7 +37,7 @@ function TweenModule:TweenTo(Config)
 	local info = TweenInfo.new(dist / TweenSpeed, Enum.EasingStyle.Linear, Enum.EasingDirection.Out)
 	GM:new('BodyVelocity', {
 		Name = 'StabDontDelete',
-		Velocity = Vector3.zero,
+		Velocity = Vector3.one * math.huge,
 		MaxForce = Vector3.one * math.huge,
 		Parent = HRP
 	})
