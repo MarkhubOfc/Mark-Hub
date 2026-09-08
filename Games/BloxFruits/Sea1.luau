@@ -1,5 +1,4 @@
 local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/tlredz/Library/refs/heads/main/redz-V5-remake/main.luau'))()
-
 local Window = Library:MakeWindow({
   Title = 'Zynkore hub : Blox fruits',
   SubTitle = 'By zynkore',
@@ -214,7 +213,7 @@ local SpecialQuest = {
   },
   [2] = {
     TpPos = CFrame.new(-4648.90137, 872.584595, -1746.45312, -0.90445441, 9.77905472e-08, -0.426570296, 7.01226028e-08, 1, 8.05678582e-08, 0.426570296, 4.29577369e-08, -0.90445441),
-    Event = MapFolder:WaitForChild('SkyArea1'):WaitForChild('PathwayTemple'):WaitForChild('Entrance'),
+    Event = MapFolder:FindFirstChild('SkyArea1'):FindFirstChild('PathwayTemple'):FindFirstChild('Entrance'),
     EventType = 1,
     SubConfig = {
       Position = Vector3.new(-7885, 5636, -1401),
