@@ -159,7 +159,13 @@ local InfoTabA = InfoTab:AddGroupbox({
 })
 
 InfoTabA:AddLabel({
-  Text = [[ [<font color="rgb(0, 255, 255)">/</font>] Fixed Auto farm (<font color="rgb(255, 0, 0)">beast</font>, not tested)]],
+  Text = [[ [<font color="rgb(255, 255, 0)">!</font>] Patched: {
+  Slow beast,
+  Slow beast aura,
+  Slow beast runner,
+  Beast untie player,
+  Spam beast ability
+}]],
   DoesWrap = true,
   Size = 15,
   Visible = true
@@ -337,7 +343,7 @@ local MainTabB = MainTab:AddGroupbox({
 
 local MainTabC = MainTab:AddGroupbox({
   Side = "Left",
-  Name = "Ragebait beast",
+  Name = "Ragebait beast (<font color='rgb(255, 255, 0)'>PATCHED</font>)",
   IconName = "star",
   Visible = true,
   Collapsed = false,
@@ -1418,6 +1424,47 @@ local NoFog_toggle = FogTabA:AddToggle("NoFog", {
   Visible = true
 })
 
+local FullBrightList = {}
+local FullBright = nil
+local FullBright_toggle = FogTabA:AddToggle("FullBright", {
+  Text = "Full bright",
+  Default = false,
+  Callback = function(V)
+    if V then
+      for _, Obj in pairs(WS:GetDescendants()) do
+        if Obj:IsA("BasePart") then
+          if Obj.CastShadow then
+            table.insert(FullBrightList, Obj)
+            Obj.CastShadow = false
+          end
+        end
+      end
+      FullBright = WS.DescendantAdded:Connect(function(Obj)
+        if Obj:IsA("BasePart") then
+          if Obj.CastShadow then
+            table.insert(FullBrightList, Obj)
+            Obj.CastShadow = false
+          end
+        end
+      end)
+    else
+      if FullBright then
+        FullBright:Disconnect()
+        FullBright = nil
+      end
+      for _, Obj in pairs(FullBrightList) do
+        if Obj ~= nil then
+          Obj.CastShadow = true
+        end
+      end
+      FullBrightList = {}
+    end
+  end,
+  Risky = false,
+  Disabled = false,
+  Visible = true
+})
+
 local SettingsTab = Window:AddTab("Settings", "settings")
 local SettingsTabA = SettingsTab:AddGroupbox({
   Side = "Left",
@@ -1511,6 +1558,7 @@ Library:OnUnload(function()
   No_hack_fail_toggle:SetValue(false)
   Auto_save_players_silent_toggle:SetValue(false)
   NoFog_toggle:SetValue(false)
+  FullBright_toggle:SetValue(false)
 end)
 
 ThemeManager:SetLibrary(Library)
