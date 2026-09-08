@@ -343,7 +343,7 @@ local MainTabB = MainTab:AddGroupbox({
 
 local MainTabC = MainTab:AddGroupbox({
   Side = "Left",
-  Name = "Ragebait beast (<font color='rgb(255, 255, 0)'>PATCHED</font>)",
+  Name = "Ragebait beast <font color='rgb(255, 255, 0)'>PATCHED</font>",
   IconName = "star",
   Visible = true,
   Collapsed = false,
@@ -495,10 +495,13 @@ PowerActive:GetPropertyChangedSignal("Value"):Connect(function()
   local Beast = GetBeast()
   if Beast ~= nil and Beast ~= Char then
     if PowerActive.Value and CurrentPower.Value == "Runner" then
-      while task.wait(2.5) do
+      local v = true
+      while v do
         Beast.BeastPowers.PowersEvent:FireServer("Jumped")
         task.wait()
       end
+      task.wait(2.5)
+      v = false
     end
   end
 end)
