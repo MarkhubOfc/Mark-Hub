@@ -114,7 +114,6 @@ local EnemieFolder = WS:WaitForChild('Enemies')
 local TweenModule = loadstring(game:HttpGet('https://raw.githubusercontent.com/Zynkore/Hub/refs/heads/main/Modules/Universal/TweenModule.luau'))()
 local ListModule = loadstring(game:HttpGet('https://raw.githubusercontent.com/Zynkore/Hub/refs/heads/main/Modules/BloxFruits/MonList/Sea1.luau'))()
 local GeneralModule = loadstring(game:HttpGet('https://raw.githubusercontent.com/Zynkore/Hub/refs/heads/main/Modules/BloxFruits/Module.lua'))()
-TweenModule:SetGameMode({'R15'})
 
 local InfoTab = Window:MakeTab({
   Title = 'Info',
