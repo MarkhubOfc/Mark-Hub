@@ -202,6 +202,11 @@ function new(c, p)
 end
 
 local SpecialQuest = {
+
+}
+
+task.spawn(function()
+SpecialQuest = {
   [1] = {
     TpPos = Vector3.new(3911.89355, 12.3084831, -1930.40942), -- CFrame
     Event = MapFolder:WaitForChild('TeleportSpawn'):WaitForChild('Entrance'),
@@ -213,7 +218,7 @@ local SpecialQuest = {
   },
   [2] = {
     TpPos = CFrame.new(-4648.90137, 872.584595, -1746.45312, -0.90445441, 9.77905472e-08, -0.426570296, 7.01226028e-08, 1, 8.05678582e-08, 0.426570296, 4.29577369e-08, -0.90445441),
-    Event = MapFolder:FindFirstChild('SkyArea1'):FindFirstChild('PathwayTemple'):FindFirstChild('Entrance'),
+    Event = MapFolder:FindFirstChild('SkyArea1') and MapFolder.SkyArea1:FindFirstChild('PathwayTemple') and MapFolder.SkyArea1.PathwayTemple:FindFirstChild('Entrance'),
     EventType = 1,
     SubConfig = {
       Position = Vector3.new(-7885, 5636, -1401),
@@ -221,6 +226,7 @@ local SpecialQuest = {
     }
   }
 }
+end)
 
 task.spawn(function()
   while true do
