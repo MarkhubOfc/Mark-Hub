@@ -159,8 +159,7 @@ local InfoTabA = InfoTab:AddGroupbox({
 })
 
 InfoTabA:AddLabel({
-  Text = [[  [<font color="rgb(0, 255, 0)">+</font>] Added Auto farm (<font color="rgb(255, 0, 0)">beast</font>, not tested)
-  [<font color="rgb(0, 255, 0)">+</font>] Added Slow beast runner]],
+  Text = [[ [<font color="rgb(0, 255, 255)">/</font>] Fixed Auto farm (<font color="rgb(255, 0, 0)">beast</font>, not tested)]],
   DoesWrap = true,
   Size = 15,
   Visible = true
@@ -283,7 +282,7 @@ local Auto_farm_beast_toggle = MainTabA:AddToggle("Enable_Auto_farm_beast", {
               local pModule = p:WaitForChild("TempPlayerStatsModule")
               if not pModule:WaitForChild("Escaped").Value then
                 if not pModule:WaitForChild("Captured").Value then
-                  HRP.CFrame = p.Character.HumanoidRootPart.CFrame + CFrame.new(0, 0, 5)
+                  HRP.CFrame = p.Character.HumanoidRootPart.CFrame * CFrame.new(0, 0, 5)
                   if pModule:WaitForChild("Ragdoll").Value then
                     Beast.Hammer.HammerEvent:FireServer("HammerTieUp", p.Character.HumanoidRootPart, p.Character.HumanoidRootPart.Position + Vector3.new(0, 0.001, 0))
                     if Beast:FindFirstChild("Part") and Beast.Part:FindFirstChild("RopeConstraint") then
@@ -490,7 +489,10 @@ PowerActive:GetPropertyChangedSignal("Value"):Connect(function()
   local Beast = GetBeast()
   if Beast ~= nil and Beast ~= Char then
     if PowerActive.Value and CurrentPower.Value == "Runner" then
-      Beast.BeastPowers.PowersEvent:FireServer("Jumped")
+      while task.wait(2.5) do
+        Beast.BeastPowers.PowersEvent:FireServer("Jumped")
+        task.wait()
+      end
     end
   end
 end)
@@ -1150,7 +1152,7 @@ local Desync_local_player_toggle = ToolsTabA:AddToggle("Desync_local_player", {
   Default = false,
   Callback = function(V)
     if raknet.is_enabled then
-      if raknet.is_enabled() then
+      if raknet.is_enabled() == false then
         if raknet.desync then
           raknet.desync(V)
         end
@@ -1165,9 +1167,6 @@ local Desync_local_player_toggle = ToolsTabA:AddToggle("Desync_local_player", {
 })
 if raknet then
   Desync_local_player_toggle:SetDisabled(false)
-  Library:Notify("Raknet avaible!", 3)
-else
-  Library:Notify("You don't have access to raknet.", 3)
 end
 
 local Hit_distance = 15
@@ -1355,9 +1354,8 @@ local Auto_save_players_silent_toggle = ToolsTabB:AddToggle("Auto_save_players_s
                       local OldTriggerPos = Obj.PodTrigger.CFrame
                       local OldOnTriggerValue = OnTrigger.Value
                       task.wait()
-                      Obj.PodTrigger.CFrame = HRP.CFrame -- + Vector3.new(0, 0, 5)
+                      Obj.PodTrigger.CFrame = HRP.CFrame
                       task.wait(0.01)
-                      -- firetouchinterest(Obj.PodTrigger, HRP, 1)
                       RemoteEvent:FireServer("Input", "Action", true, Obj.PodTrigger.Event)
                       Obj.PodTrigger.CFrame = OldTriggerPos
                       ActionInput.Value = OldOnTriggerValue
