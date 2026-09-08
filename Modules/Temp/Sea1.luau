@@ -7,7 +7,7 @@ function Module:CheckQuest()
     MonName = "Bandit",
     QuestName = "BanditQuest1",
     QuestLevel = 1,
-    QuestTitle = "",
+    QuestTitle = "Defeat 5 Bandits",
     QuestCFrame = CFrame.new(1052.93628, 15.1164293, 1551.85596, -0.961428165, -2.23723067e-08, 0.275056243, -2.2906379e-08, 1, 1.27053668e-09, -0.275056243, -5.07901277e-09, -0.961428165),
     MonCFrame = CFrame.new(1237.02576, 61.2648048, 1502.44153, -0.989115715, 9.5733796e-08, 0.147139624, 9.06752859e-08, 1, -4.10864445e-08, -0.147139624, -2.729732e-08, -0.989115715)
   }
